@@ -1,10 +1,15 @@
 package com.example.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 import java.io.Serializable;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "CT_DOTGIAMGIA")
 public class CTDotGiamGia {
 
@@ -27,10 +32,3 @@ public class CTDotGiamGia {
     // Getters and Setters
 }
 
-@Embeddable
-class CTDotGiamGiaId implements Serializable {
-    private int masp;
-    private int madgg;
-
-    // Getters, Setters, hashCode, equals
-}
