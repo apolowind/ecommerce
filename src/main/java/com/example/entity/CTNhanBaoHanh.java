@@ -1,9 +1,13 @@
 package com.example.entity;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Date;
 @Entity
+@Getter
+@Setter
 @Table(name = "CT_NHANBAOHANH")
 public class CTNhanBaoHanh {
 
@@ -40,10 +44,3 @@ public class CTNhanBaoHanh {
     // Getters and Setters
 }
 
-@Embeddable
-class CTNhanBaoHanhId implements Serializable {
-    private int sopbh;
-    private Date ngaynhan;
-
-    // Getters, Setters, hashCode, equals
-}
