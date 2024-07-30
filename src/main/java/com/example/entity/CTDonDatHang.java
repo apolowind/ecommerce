@@ -2,11 +2,15 @@ package com.example.entity;
 
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "CT_DONDATHANG")
 public class CTDonDatHang {
 
@@ -32,10 +36,3 @@ public class CTDonDatHang {
     // Getters and Setters
 }
 
-@Embeddable
-class CTDonDatHangId implements Serializable {
-    private int masp;
-    private int maddh;
-
-    // Getters, Setters, hashCode, equals
-}
