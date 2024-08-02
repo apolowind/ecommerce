@@ -10,7 +10,7 @@ const QuyenApi = {
         return axiosClient.post(url, data);
     },
     updateQuyen(data) {
-        const url = '/quyen';
+        const url = '/quyen/' + data?.maquyen;
         return axiosClient.put(url, data);
     },
     getDetailQuyen(id) {

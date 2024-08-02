@@ -163,6 +163,14 @@ const NhaCungCapManagement = lazy(() => {
         .then(([moduleExports]) => moduleExports);
 });
 
+const Quyen = lazy(() => {
+    return Promise.all([
+        import('../pages/Admin/QuyenManagement.js'),
+        new Promise(resolve => setTimeout(resolve, 0))
+    ])
+        .then(([moduleExports]) => moduleExports);
+});
+
 const RouterURL = withRouter(({ location }) => {
 
     const LoginContainer = () => (
@@ -258,6 +266,12 @@ const RouterURL = withRouter(({ location }) => {
                             </Suspense>
                         </PrivateRoute>
 
+                        <PrivateRoute exact path="/quyen-management">
+                            <Suspense fallback={<LoadingScreen />}>
+                                <Quyen />
+                            </Suspense>
+                        </PrivateRoute>
+
                         <PrivateRoute exact path="/dot-giam-gia/:madgg">
                             <Suspense fallback={<LoadingScreen />}>
                                 <DotGiamGiaDetail />
@@ -293,7 +307,7 @@ const RouterURL = withRouter(({ location }) => {
                     <Route exact path="/change-password/:id">
                         <DefaultContainer />
                     </Route>
-                    <Route exact path="/account-create">
+                    <Route exact path="/quyen-management">
                         <DefaultContainer />
                     </Route>
                     <Route exact path="/account-management">

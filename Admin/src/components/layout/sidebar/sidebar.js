@@ -32,6 +32,12 @@ function Sidebar() {
       icon: <FormOutlined />
     },
     {
+      key: "quyen-management",
+      title: "Quản lý phân quyền",
+      link: "/quyen-management",
+      icon: <FormOutlined />
+    },
+    {
       key: "nha-cung-cap-management",
       title: "Quản lý nhà cung cấp",
       link: "/nha-cung-cap-management",
