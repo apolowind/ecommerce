@@ -147,6 +147,14 @@ const ResetPassword = lazy(() => {
         .then(([moduleExports]) => moduleExports);
 });
 
+const LoaiSanPham = lazy(() => {
+    return Promise.all([
+        import('../pages/Admin/LoaiSanPhamManagement.js'),
+        new Promise(resolve => setTimeout(resolve, 0))
+    ])
+        .then(([moduleExports]) => moduleExports);
+});
+
 const RouterURL = withRouter(({ location }) => {
 
     const LoginContainer = () => (
@@ -209,9 +217,9 @@ const RouterURL = withRouter(({ location }) => {
                                 <ProductList />
                             </Suspense>
                         </PrivateRoute>
-                        <PrivateRoute exact path="/category-list">
+                        <PrivateRoute exact path="/loai-san-pham">
                             <Suspense fallback={<LoadingScreen />}>
-                                <CategoryList />
+                                <LoaiSanPham />
                             </Suspense>
                         </PrivateRoute>
                         <PrivateRoute exact path="/dot-giam-gia">
@@ -289,7 +297,7 @@ const RouterURL = withRouter(({ location }) => {
                     <Route exact path="/product-list">
                         <DefaultContainer />
                     </Route>
-                    <Route exact path="/category-list">
+                    <Route exact path="/loai-san-pham">
                         <DefaultContainer />
                     </Route>
                     <Route exact path="/profile">

@@ -44,9 +44,9 @@ function Sidebar() {
       icon: <ShoppingOutlined />
     },
     {
-      key: "suppliers",
-      title: "Quản lý nhà cung cấp",
-      link: "/suppliers",
+      key: "loai-san-pham",
+      title: "Loại sản phẩm",
+      link: "/loai-san-pham",
       icon: <BarsOutlined />
     },
     {
