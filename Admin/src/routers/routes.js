@@ -171,6 +171,16 @@ const Quyen = lazy(() => {
         .then(([moduleExports]) => moduleExports);
 });
 
+const SanPhamManagement = lazy(() => {
+    return Promise.all([
+        import('../pages/Admin/SanPhamManagement.js'),
+        new Promise(resolve => setTimeout(resolve, 0))
+    ])
+        .then(([moduleExports]) => moduleExports);
+});
+
+
+
 const RouterURL = withRouter(({ location }) => {
 
     const LoginContainer = () => (
@@ -230,7 +240,7 @@ const RouterURL = withRouter(({ location }) => {
                         </PrivateRoute>
                         <PrivateRoute exact path="/product-list">
                             <Suspense fallback={<LoadingScreen />}>
-                                <ProductList />
+                                <SanPhamManagement />
                             </Suspense>
                         </PrivateRoute>
                         <PrivateRoute exact path="/loai-san-pham">
