@@ -9,8 +9,8 @@ const nhanVienApi = {
         const url = '/nhanvien';
         return axiosClient.post(url, data);
     },
-    updateNhanVien(data) {
-        const url = '/nhanvien';
+    updateNhanVien(id, data) {
+        const url = '/nhanvien/' + id;
         return axiosClient.put(url, data);
     },
     getDetailNhanVien(id) {

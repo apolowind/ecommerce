@@ -179,6 +179,16 @@ const SanPhamManagement = lazy(() => {
         .then(([moduleExports]) => moduleExports);
 });
 
+const NhanVienManagement = lazy(() => {
+    return Promise.all([
+        import('../pages/Admin/NhanVienManagement.js'),
+        new Promise(resolve => setTimeout(resolve, 0))
+    ])
+        .then(([moduleExports]) => moduleExports);
+});
+
+
+
 
 
 const RouterURL = withRouter(({ location }) => {
@@ -241,6 +251,11 @@ const RouterURL = withRouter(({ location }) => {
                         <PrivateRoute exact path="/product-list">
                             <Suspense fallback={<LoadingScreen />}>
                                 <SanPhamManagement />
+                            </Suspense>
+                        </PrivateRoute>
+                        <PrivateRoute exact path="/nhan-vien-management">
+                            <Suspense fallback={<LoadingScreen />}>
+                                <NhanVienManagement />
                             </Suspense>
                         </PrivateRoute>
                         <PrivateRoute exact path="/loai-san-pham">
@@ -332,7 +347,7 @@ const RouterURL = withRouter(({ location }) => {
                     <Route exact path="/loai-san-pham">
                         <DefaultContainer />
                     </Route>
-                    <Route exact path="/profile">
+                    <Route exact path="/nhan-vien-management">
                         <DefaultContainer />
                     </Route>
                     <Route exact path="/order-list">

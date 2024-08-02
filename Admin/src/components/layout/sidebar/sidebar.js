@@ -44,9 +44,9 @@ function Sidebar() {
       icon: <FormOutlined />
     },
     {
-      key: "category-list",
-      title: "Danh mục sản phẩm",
-      link: "/category-list",
+      key: "nhan-vien-management",
+      title: "Quản lý nhân viên",
+      link: "/nhan-vien-management",
       icon: <ShoppingOutlined />
     },
     {
