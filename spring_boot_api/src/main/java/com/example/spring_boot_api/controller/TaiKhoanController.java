@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/tai-khoan")
 public class TaiKhoanController {
@@ -25,5 +27,17 @@ public class TaiKhoanController {
     public ResponseEntity<TaiKhoan> login(@RequestBody LoginDTO loginDTO) {
         TaiKhoan taiKhoan = taiKhoanService.login(loginDTO);
         return ResponseEntity.ok(taiKhoan);
+    }
+
+    @GetMapping("/profile/{username}")
+    public ResponseEntity<TaiKhoan> getProfile(@PathVariable String username) {
+        TaiKhoan taiKhoan = taiKhoanService.getProfile(username);
+        return ResponseEntity.ok(taiKhoan);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<TaiKhoan>> getAllAccounts() {
+        List<TaiKhoan> taiKhoans = taiKhoanService.getAllAccounts();
+        return ResponseEntity.ok(taiKhoans);
     }
 }

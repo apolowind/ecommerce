@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TaiKhoanServiceImpl implements TaiKhoanService {
 
@@ -41,5 +43,15 @@ public class TaiKhoanServiceImpl implements TaiKhoanService {
             throw new RuntimeException("Invalid credentials");
         }
         return taiKhoan;
+    }
+
+    @Override
+    public TaiKhoan getProfile(String username) {
+        return taiKhoanRepository.findById(username).orElseThrow(() -> new RuntimeException("TaiKhoan not found"));
+    }
+
+    @Override
+    public List<TaiKhoan> getAllAccounts() {
+        return taiKhoanRepository.findAll();
     }
 }
