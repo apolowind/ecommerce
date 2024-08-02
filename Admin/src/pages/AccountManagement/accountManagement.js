@@ -63,7 +63,7 @@ const AccountManagement = () => {
                 <Space size="middle">
                     {
                         <Tag color="blue" key={text} style={{ width: 120, textAlign: "center" }} icon={<CopyOutlined />}>
-                            {text.tenquyen}
+                            {text?.tenquyen}
                         </Tag>
                     }
                 </Space>

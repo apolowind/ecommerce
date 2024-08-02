@@ -32,9 +32,9 @@ function Sidebar() {
       icon: <FormOutlined />
     },
     {
-      key: "inventory",
-      title: "Quản lý kho hàng",
-      link: "/inventory",
+      key: "nha-cung-cap-management",
+      title: "Quản lý nhà cung cấp",
+      link: "/nha-cung-cap-management",
       icon: <FormOutlined />
     },
     {

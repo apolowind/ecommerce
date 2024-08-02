@@ -155,6 +155,14 @@ const LoaiSanPham = lazy(() => {
         .then(([moduleExports]) => moduleExports);
 });
 
+const NhaCungCapManagement = lazy(() => {
+    return Promise.all([
+        import('../pages/Admin/NhaCungCapManagement.js'),
+        new Promise(resolve => setTimeout(resolve, 0))
+    ])
+        .then(([moduleExports]) => moduleExports);
+});
+
 const RouterURL = withRouter(({ location }) => {
 
     const LoginContainer = () => (
@@ -207,9 +215,9 @@ const RouterURL = withRouter(({ location }) => {
                             <NotFound /></PrivateRoute>
 
 
-                        <PrivateRoute exact path="/notification">
+                        <PrivateRoute exact path="/nha-cung-cap-management">
                             <Suspense fallback={<LoadingScreen />}>
-                                <Notification />
+                                <NhaCungCapManagement />
                             </Suspense>
                         </PrivateRoute>
                         <PrivateRoute exact path="/product-list">
@@ -291,7 +299,7 @@ const RouterURL = withRouter(({ location }) => {
                     <Route exact path="/account-management">
                         <DefaultContainer />
                     </Route>
-                    <Route exact path="/notification">
+                    <Route exact path="/nha-cung-cap-management">
                         <DefaultContainer />
                     </Route>
                     <Route exact path="/product-list">
