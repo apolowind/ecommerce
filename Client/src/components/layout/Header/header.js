@@ -142,7 +142,7 @@ function Topbar() {
         <NavLink className={styles.navlink} to="/contact" activeStyle>
           Liên hệ
         </NavLink>
-        <Select
+        {/* <Select
           showSearch
           style={{ width: 270 }}
           placeholder="Bạn tìm gì..."
@@ -155,7 +155,7 @@ function Topbar() {
           onChange={handleSelectChange}
           onSearch={handleSearch}
 
-        />
+        /> */}
       </div>
       <div className={styles.logBtn}>
       <div style={{ position: 'relative', display: 'flex', alignItems: 'center', cursor: 'pointer', justifyContent: 'center' }}>
