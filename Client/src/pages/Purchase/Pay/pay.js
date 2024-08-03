@@ -47,6 +47,10 @@ const Pay = () => {
       const response = await donHangApi.createDonHang(orderData);
       console.log("Order created successfully: ", response);
 
+      localStorage.removeItem("cart");
+      localStorage.removeItem("cartLength");
+
+
       form.resetFields();
       history.push("/final-pay");
     } catch (error) {

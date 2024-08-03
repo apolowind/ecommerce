@@ -85,6 +85,12 @@ function Sidebar() {
       link: "/don-dat-hang",
       icon: <FileTextOutlined />
     },
+    {
+      key: "donhang",
+      title: "Đơn hàng",
+      link: "/donhang",
+      icon: <ShoppingCartOutlined />
+    },
   ];
   const navigate = (link, key) => {
     history.push(link);

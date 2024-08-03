@@ -158,6 +158,14 @@ const CTDonDatHang = lazy(() => {
         .then(([moduleExports]) => moduleExports);
 });
 
+const DonHangManagement = lazy(() => {
+    return Promise.all([
+        import('../pages/Admin/DonHangManagement.js'),
+        new Promise(resolve => setTimeout(resolve, 0))
+    ])
+        .then(([moduleExports]) => moduleExports);
+});
+
 
 
 
@@ -280,11 +288,15 @@ const RouterURL = withRouter(({ location }) => {
                             </Suspense>
                         </PrivateRoute>
 
-                        
-
                         <PrivateRoute exact path="/dot-giam-gia/:madgg">
                             <Suspense fallback={<LoadingScreen />}>
                                 <DotGiamGiaDetail />
+                            </Suspense>
+                        </PrivateRoute>
+
+                        <PrivateRoute exact path="/donhang">
+                            <Suspense fallback={<LoadingScreen />}>
+                                <DonHangManagement />
                             </Suspense>
                         </PrivateRoute>
                         
@@ -354,6 +366,10 @@ const RouterURL = withRouter(({ location }) => {
                     </Route>
 
                     <Route exact path="/ctdondathang/:id">
+                        <DefaultContainer />
+                    </Route>
+
+                    <Route exact path="/donhang">
                         <DefaultContainer />
                     </Route>
                     <Route>
