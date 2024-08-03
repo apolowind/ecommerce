@@ -67,6 +67,12 @@ function Sidebar() {
       link: "/dot-giam-gia",
       icon: <BarsOutlined />
     },
+    {
+      key: "don-dat-hang",
+      title: "Đơn đặt hàng",
+      link: "/don-dat-hang",
+      icon: <BarsOutlined />
+    },
   ];
 
   const navigate = (link, key) => {

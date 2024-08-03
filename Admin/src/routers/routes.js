@@ -142,6 +142,16 @@ const NhanVienManagement = lazy(() => {
         .then(([moduleExports]) => moduleExports);
 });
 
+const DonDatHang = lazy(() => {
+    return Promise.all([
+        import('../pages/Admin/DonDatHangManagement.js'),
+        new Promise(resolve => setTimeout(resolve, 0))
+    ])
+        .then(([moduleExports]) => moduleExports);
+});
+
+
+
 
 
 
@@ -246,6 +256,14 @@ const RouterURL = withRouter(({ location }) => {
                             </Suspense>
                         </PrivateRoute>
 
+                        <PrivateRoute exact path="/don-dat-hang">
+                            <Suspense fallback={<LoadingScreen />}>
+                                <DonDatHang />
+                            </Suspense>
+                        </PrivateRoute>
+
+                        
+
                         <PrivateRoute exact path="/dot-giam-gia/:madgg">
                             <Suspense fallback={<LoadingScreen />}>
                                 <DotGiamGiaDetail />
@@ -272,6 +290,11 @@ const RouterURL = withRouter(({ location }) => {
                     <Route exact path="/dot-giam-gia">
                         <DefaultContainer />
                     </Route>
+                    <Route exact path="/don-dat-hang">
+                        <DefaultContainer />
+                    </Route>
+
+                    
                     <Route exact path="/reset-password/:id">
                         <LoginContainer />
                     </Route>
