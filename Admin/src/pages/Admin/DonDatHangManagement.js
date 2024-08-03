@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Modal, Form, Input, DatePicker, Select, notification, Spin, Popconfirm, Space, Row, Col } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Table, Button, Modal, Form, DatePicker, Select, notification, Spin, Popconfirm, Space, Row, Col } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
+import { useHistory } from 'react-router-dom';
 import donDatHangApi from '../../apis/donDatHangApi';
 import nhaCungCapApi from '../../apis/nhaCungCapApi';
 import nhanVienApi from '../../apis/nhanVienApi';
@@ -19,6 +20,7 @@ const DonDatHangManagement = () => {
     const [form] = Form.useForm();
     const [form2] = Form.useForm();
     const [currentId, setCurrentId] = useState(null);
+    const history = useHistory();
 
     useEffect(() => {
         fetchDonDatHangList();
@@ -62,7 +64,6 @@ const DonDatHangManagement = () => {
                 nhacungcap: { mancc: values.mancc },
                 nhanvien: { manv: values.manv }
             };
-
 
             await donDatHangApi.createDonDatHang(data);
             notification.success({ message: 'Tạo đơn đặt hàng thành công' });
@@ -114,7 +115,7 @@ const DonDatHangManagement = () => {
             const response = await donDatHangApi.getDetailDonDatHang(id);
             form2.setFieldsValue({
                 ...response,
-                ngaydathang:  dayjs(response.ngaydathang),
+                ngaydathang: dayjs(response.ngaydathang),
                 manv: response?.nhanvien?.manv,
                 mancc: response?.nhacungcap?.mancc,
             });
@@ -122,6 +123,10 @@ const DonDatHangManagement = () => {
         } catch (error) {
             console.error('Failed to fetch don dat hang details:', error);
         }
+    };
+
+    const handleView = (id) => {
+        history.push(`/ctdondathang/${id}`);
     };
 
     const columns = [
@@ -153,6 +158,13 @@ const DonDatHangManagement = () => {
             key: 'action',
             render: (text, record) => (
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <Button
+                        icon={<EyeOutlined />}
+                        onClick={() => handleView(record.maddh)}
+                        style={{ width: 150, borderRadius: 15, height: 30, marginBottom: 10 }}
+                    >
+                        Xem chi tiết
+                    </Button>
                     <Button
                         icon={<EditOutlined />}
                         onClick={() => handleEdit(record.maddh)}

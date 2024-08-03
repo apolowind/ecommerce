@@ -150,6 +150,14 @@ const DonDatHang = lazy(() => {
         .then(([moduleExports]) => moduleExports);
 });
 
+const CTDonDatHang = lazy(() => {
+    return Promise.all([
+        import('../pages/Admin/CTDonDatHangManagement.js'),
+        new Promise(resolve => setTimeout(resolve, 0))
+    ])
+        .then(([moduleExports]) => moduleExports);
+});
+
 
 
 
@@ -207,6 +215,16 @@ const RouterURL = withRouter(({ location }) => {
                                 <NhaCungCapManagement />
                             </Suspense>
                         </PrivateRoute>
+
+                        <PrivateRoute exact path="/ctdondathang/:id">
+                            <Suspense fallback={<LoadingScreen />}>
+                                <CTDonDatHang />
+                            </Suspense>
+                        </PrivateRoute>
+
+                        
+
+
                         <PrivateRoute exact path="/product-list">
                             <Suspense fallback={<LoadingScreen />}>
                                 <SanPhamManagement />
@@ -335,9 +353,8 @@ const RouterURL = withRouter(({ location }) => {
                         <DefaultContainer />
                     </Route>
 
-                    
-                    <Route exact path="/reset-password/:id">
-                        <LoginContainer />
+                    <Route exact path="/ctdondathang/:id">
+                        <DefaultContainer />
                     </Route>
                     <Route>
                         <NotFound />
