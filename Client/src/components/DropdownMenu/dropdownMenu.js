@@ -29,7 +29,7 @@ function DropdownAvatar() {
   useEffect(() => {
     (async () => {
       try {
-        const local = localStorage.getItem("client");
+        const local = localStorage.getItem("user");
         const user = JSON.parse(local);
         console.log(user)
         setUserData(user);
@@ -83,7 +83,7 @@ function DropdownAvatar() {
                 />
               </div>
               <p style={{ padding: 0, margin: 0, textTransform: 'capitalize', color: "#FFFFFF" }} >
-                {userData?.username}
+                {userData?.tendangnhap}
               </p>
             </div>
           </Row>

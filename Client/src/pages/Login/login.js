@@ -16,7 +16,7 @@ const Login = () => {
     userApi.login(values.email, values.password)
       .then(function (response) {
         console.log(response);
-        if (response.user.role === "isClient" && response.user.status !== "noactive") {
+        if (response) {
           history.push("/home");
         } else {
           setLogin(false);
@@ -73,18 +73,14 @@ const Login = () => {
             rules={[
               {
                 required: true,
-                message: 'Vui lòng nhập email!',
-              },
-              {
-                type: 'email',
-                message: 'Email không hợp lệ!',
+                message: 'Vui lòng nhập tài khoản!',
               },
             ]}
           >
             <Input
               style={{ height: 34, borderRadius: 5 }}
               prefix={<UserOutlined className="siteformitemicon" />}
-              placeholder="Email" />
+              placeholder="Tài khoản" />
           </Form.Item >
           <Form.Item
             style={{ marginBottom: 8 }}
