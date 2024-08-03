@@ -106,8 +106,8 @@ const DonHangManagement = () => {
                 ngaydat: dayjs(response.ngaydat),
                 ngaynhan: dayjs(response.ngaynhan),
                 makh: response.khachhang.makh,
-                nhanvienDuyet:  response.nhanvienDuyet.manv ,
-                nhanvienGiao:  response.nhanvienGiao.manv 
+                nhanvienDuyet:  response?.nhanvienDuyet?.manv || null ,
+                nhanvienGiao:  response?.nhanvienGiao?.manv || null
             });
             setOpenModalUpdate(true);
         } catch (error) {
