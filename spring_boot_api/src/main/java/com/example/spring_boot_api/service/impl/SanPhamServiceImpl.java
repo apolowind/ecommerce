@@ -1,5 +1,6 @@
 package com.example.spring_boot_api.service.impl;
 
+import com.example.spring_boot_api.entity.LoaiSanPham;
 import com.example.spring_boot_api.entity.SanPham;
 import com.example.spring_boot_api.repository.SanPhamRepository;
 import com.example.spring_boot_api.service.SanPhamService;
@@ -58,5 +59,10 @@ public class SanPhamServiceImpl implements SanPhamService {
     @Override
     public List<SanPham> searchByName(String name) {
         return sanPhamRepository.findByTensanphamContaining(name);
+    }
+
+    @Override
+    public List<SanPham> findByLoaiSanPham(LoaiSanPham loaisanpham) {
+        return sanPhamRepository.findByLoaisanpham(loaisanpham);
     }
 }

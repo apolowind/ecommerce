@@ -14,7 +14,7 @@ const sanPhamApi = {
         return axiosClient.put(url, data);
     },
     getByLoai(id) {
-        const url = `/sanpham/loai/${id}`;
+        const url = `/sanpham/loaisanpham/${id}`;
         return axiosClient.get(url);
     },
     getDetailSanPham(id) {

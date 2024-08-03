@@ -18,6 +18,7 @@ import Paragraph from "antd/lib/typography/Paragraph";
 import { useHistory } from 'react-router-dom';
 import { numberWithCommas } from "../../utils/common";
 import LoaisanphamApi from '../../apis/loaisanphamApi';
+import sanPhamApi from '../../apis/sanPhamApi';
 
 const DATE_TIME_FORMAT = "DD - MM - YYYY";
 const gridStyle = {
@@ -27,12 +28,6 @@ const gridStyle = {
 
 const Home = () => {
 
-    const [event, setEvent] = useState([]);
-    const [productList, setProductList] = useState([]);
-    const [eventListHome, setEventListHome] = useState([]);
-    const [totalEvent, setTotalEvent] = useState(Number);
-    const [loading, setLoading] = useState(true);
-    const [currentPage, setCurrentPage] = useState(1);
     const [categories, setCategories] = useState([]);
     const [productsPhone, setProductsPhone] = useState([]);
     const [productsPC, setProductsPC] = useState([]);
@@ -41,9 +36,9 @@ const Home = () => {
     const tawkMessengerRef = useRef();
     const initialCountdownDate = new Date().getTime() + 24 * 60 * 60 * 1000;
     const [countdownDate, setCountdownDate] = useState(
-      localStorage.getItem('countdownDate') || initialCountdownDate
+        localStorage.getItem('countdownDate') || initialCountdownDate
     );
-  
+
     const [timeLeft, setTimeLeft] = useState(countdownDate - new Date().getTime());
 
     const history = useHistory();
@@ -89,16 +84,16 @@ const Home = () => {
                 console.log(error);
             }
             try {
-                // const data = { limit: 10, page: 1 };
-                // const response = await productApi.getProductsByCategory("1");
-                // console.log(response);
-                // setProductsPhone(response.data);
-                // const response2 = await productApi.getProductsByCategory("2");
-                // console.log(response2);
-                // setProductsPC(response2.data);
-                // const response3 = await productApi.getProductsByCategory("3");
-                // console.log(response3);
-                // setProductsTablet(response3.data);
+                const data = { limit: 10, page: 1 };
+                const response = await sanPhamApi.getByLoai("1");
+                console.log(response);
+                setProductsPhone(response);
+                const response2 = await sanPhamApi.getByLoai("2");
+                console.log(response2);
+                setProductsPC(response2);
+                const response3 = await sanPhamApi.getByLoai("3");
+                console.log(response3);
+                setProductsTablet(response3);
             } catch (error) {
                 console.log(error);
             }
@@ -124,7 +119,7 @@ const Home = () => {
     const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
 
     return (
-        
+
         <Spin spinning={false}>
 
             <div style={{ background: "#FFFFFF", overflowX: "hidden", overflowY: "hidden", paddingTop: 15, }} className="home">
@@ -133,7 +128,7 @@ const Home = () => {
                         <Col span={4} >
                             <ul className="menu-tree">
                                 {categories.map((category) => (
-                                    <li key={category.id} onClick={() => handleCategoryDetails(category.id)}>
+                                    <li key={category.id} onClick={() => handleCategoryDetails(category.maloaisp)}>
                                         <div className="menu-category">
                                             {category.tenloaisp}
                                             <RightOutlined />
@@ -224,7 +219,7 @@ const Home = () => {
                                         <strong style={{ fontSize: 18 }}>{hours.toString().padStart(2, '0')}</strong><br />
                                         <small>Giờ</small>
                                     </li>
-                                    
+
                                     <li className="timer-item mins">
                                         <strong style={{ fontSize: 18 }}>{minutes.toString().padStart(2, '0')}</strong><br />
                                         <small>Phút</small>
@@ -259,14 +254,14 @@ const Home = () => {
                                     sm={{ span: 12 }}
                                     xs={{ span: 24 }}
                                     className='col-product'
-                                    onClick={() => handleReadMore(item.id)}
-                                    key={item.id}
+                                    onClick={() => handleReadMore(item.masp)}
+                                    key={item.masp}
                                 >
                                     <div className="show-product">
-                                        {item.image ? (
+                                        {item?.hinhanh ? (
                                             <img
                                                 className='image-product'
-                                                src={item.image}
+                                                src={item?.hinhanh}
                                             />
                                         ) : (
                                             <img
@@ -279,24 +274,15 @@ const Home = () => {
                                                 className='title-product'
                                                 ellipsis={{ rows: 2 }}
                                             >
-                                                {item.name}
+                                                {item?.tensanpham}
                                             </Paragraph>
                                             <div className="price-amount">
                                                 <Paragraph className='price-product'>
-                                                    {numberWithCommas(item.promotion)} đ
+                                                    {numberWithCommas(item?.giahientai)} đ
                                                 </Paragraph>
-                                                {item.promotion !== 0 &&
-                                                    <Paragraph className='price-cross'>
-                                                        {numberWithCommas(item.price)} đ
-                                                    </Paragraph>
-                                                }
                                             </div>
                                         </div>
                                     </div>
-                                    <Paragraph className='badge' style={{ position: 'absolute', top: 10, left: 9 }}>
-                                        <span>Giảm giá</span>
-                                        <img src={triangleTopRight} />
-                                    </Paragraph>
                                 </Col>
                             ))}
                         </Row>
@@ -372,14 +358,14 @@ const Home = () => {
                                     sm={{ span: 12 }}
                                     xs={{ span: 24 }}
                                     className='col-product'
-                                    onClick={() => handleReadMore(item.id)}
-                                    key={item.id}
+                                    onClick={() => handleReadMore(item.masp)}
+                                    key={item.masp}
                                 >
                                     <div className="show-product">
-                                        {item.image ? (
+                                        {item?.hinhanh ? (
                                             <img
                                                 className='image-product'
-                                                src={item.image}
+                                                src={item?.hinhanh}
                                             />
                                         ) : (
                                             <img
@@ -392,24 +378,15 @@ const Home = () => {
                                                 className='title-product'
                                                 ellipsis={{ rows: 2 }}
                                             >
-                                                {item.name}
+                                                {item?.tensanpham}
                                             </Paragraph>
                                             <div className="price-amount">
                                                 <Paragraph className='price-product'>
-                                                    {numberWithCommas(item.promotion)} đ
+                                                    {numberWithCommas(item?.giahientai)} đ
                                                 </Paragraph>
-                                                {item.promotion !== 0 &&
-                                                    <Paragraph className='price-cross'>
-                                                        {numberWithCommas(item.price)} đ
-                                                    </Paragraph>
-                                                }
                                             </div>
                                         </div>
                                     </div>
-                                    <Paragraph className='badge' style={{ position: 'absolute', top: 10, left: 9 }}>
-                                        <span>Giảm giá</span>
-                                        <img src={triangleTopRight} />
-                                    </Paragraph>
                                 </Col>
                             ))}
                         </Row>
@@ -446,14 +423,14 @@ const Home = () => {
                                     sm={{ span: 12 }}
                                     xs={{ span: 24 }}
                                     className='col-product'
-                                    onClick={() => handleReadMore(item.id)}
-                                    key={item.id}
+                                    onClick={() => handleReadMore(item.masp)}
+                                    key={item.masp}
                                 >
                                     <div className="show-product">
-                                        {item.image ? (
+                                        {item?.hinhanh ? (
                                             <img
                                                 className='image-product'
-                                                src={item.image}
+                                                src={item?.hinhanh}
                                             />
                                         ) : (
                                             <img
@@ -466,31 +443,22 @@ const Home = () => {
                                                 className='title-product'
                                                 ellipsis={{ rows: 2 }}
                                             >
-                                                {item.name}
+                                                {item?.tensanpham}
                                             </Paragraph>
                                             <div className="price-amount">
                                                 <Paragraph className='price-product'>
-                                                    {numberWithCommas(item.promotion)} đ
+                                                    {numberWithCommas(item?.giahientai)} đ
                                                 </Paragraph>
-                                                {item.promotion !== 0 &&
-                                                    <Paragraph className='price-cross'>
-                                                        {numberWithCommas(item.price)} đ
-                                                    </Paragraph>
-                                                }
                                             </div>
                                         </div>
                                     </div>
-                                    <Paragraph className='badge' style={{ position: 'absolute', top: 10, left: 9 }}>
-                                        <span>Giảm giá</span>
-                                        <img src={triangleTopRight} />
-                                    </Paragraph>
                                 </Col>
                             ))}
                         </Row>
                     </div>
                 </div>
 
-               
+
 
                 <div className="image-footer">
                     <OverPack style={{ overflow: 'hidden', height: 800, marginTop: 20 }} >
@@ -522,7 +490,7 @@ const Home = () => {
                     </OverPack>
                 </div>
             </div>
-      
+
             <BackTop style={{ textAlign: 'right' }} />
         </Spin >
     );

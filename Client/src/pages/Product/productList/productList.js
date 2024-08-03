@@ -70,11 +70,11 @@ const ProductList = () => {
   useEffect(() => {
     (async () => {
       try {
-        // await sanPhamApi.getDetailSanPham(id).then((response) => {
+        await sanPhamApi.getByLoai(id).then((response) => {
 
-        //   // Cập nhật state với danh sách sản phẩm chỉ có trạng thái 'Available'
-        //   setProductDetail(response.data);
-        // });
+          // Cập nhật state với danh sách sản phẩm chỉ có trạng thái 'Available'
+          setProductDetail(response);
+        });
         const response = await LoaisanphamApi.getAll();
         setCategories(response);
 
@@ -128,9 +128,9 @@ const ProductList = () => {
                 </Col>
                 <Col span={12}>
                   <div className="button-category">
-                    <Button type="primary" onClick={() => handleSearchClick()}>
+                    {/* <Button type="primary" onClick={() => handleSearchClick()}>
                       Tất cả sản phẩm
-                    </Button>
+                    </Button> */}
                   </div>
                 </Col>
               </Row>
@@ -157,10 +157,10 @@ const ProductList = () => {
                     <List.Item>
                       <div
                         className="show-product"
-                        onClick={() => handleReadMore(item.id)}
+                        onClick={() => handleReadMore(item.masp)}
                       >
-                        {item.image ? (
-                          <img className="image-product" src={item.image} />
+                        {item.hinhanh ? (
+                          <img className="image-product" src={item.hinhanh} />
                         ) : (
                           <img
                             className="image-product"
@@ -172,29 +172,18 @@ const ProductList = () => {
                             className="title-product"
                             ellipsis={{ rows: 2 }}
                           >
-                            {item.name}
+                            {item.tensanpham}
                           </Paragraph>
-                          {!item?.audioUrl && (
 
                             <div className="price-amount">
                               <React.Fragment>
-                                {item?.promotion === item?.price ? (
-                                  <Paragraph className="price-product">
-                                    {numberWithCommas(item.promotion)} đ
-                                  </Paragraph>
-                                ) : (
                                   <React.Fragment>
                                     <Paragraph className="price-product">
-                                      {item?.promotion && numberWithCommas(item.promotion)} đ
-                                    </Paragraph>
-                                    <Paragraph className="price-cross">
-                                      {item.price && numberWithCommas(item.price)} đ
+                                      {item?.giahientai && numberWithCommas(item.giahientai)} đ
                                     </Paragraph>
                                   </React.Fragment>
-                                )}
                               </React.Fragment>
                             </div>
-                          )}
                         </div>
                       </div>
                       {item?.status === 'Unavailable' || item?.status === 'Discontinued' && !item?.audioUrl ? (

@@ -6,6 +6,7 @@ import { useHistory, useParams } from "react-router-dom";
 import axiosClient from "../../../apis/axiosClient";
 import triangleTopRight from "../../../assets/icon/Triangle-Top-Right.svg";
 import { numberWithCommas } from "../../../utils/common";
+import sanPhamApi from '../../../apis/sanPhamApi';
 
 const { TextArea } = Input;
 
@@ -29,7 +30,7 @@ const ProductDetail = () => {
         console.log(product);
         const existingItems = JSON.parse(localStorage.getItem('cart')) || [];
         let updatedItems;
-        const existingItemIndex = existingItems.findIndex((item) => item.id === product.id);
+        const existingItemIndex = existingItems.findIndex((item) => item.masp === product.masp);
         if (existingItemIndex !== -1) {
             // If product already exists in the cart, increase its quantity
             updatedItems = existingItems.map((item, index) => {
@@ -56,7 +57,7 @@ const ProductDetail = () => {
         console.log(product);
         const existingItems = JSON.parse(localStorage.getItem('cart')) || [];
         let updatedItems;
-        const existingItemIndex = existingItems.findIndex((item) => item.id === product.id);
+        const existingItemIndex = existingItems.findIndex((item) => item.masp === product.masp);
         if (existingItemIndex !== -1) {
             // If product already exists in the cart, increase its quantity
             updatedItems = existingItems.map((item, index) => {
@@ -100,13 +101,6 @@ const ProductDetail = () => {
     const handleCommentChange = (e) => {
         setComment(e.target.value);
     };
-
-    function handleClick(color) {
-        // Xử lý logic khi click vào điểm màu
-        console.log('Selected color:', color);
-        setColorProduct(color);
-        setSelectedColor(color);
-    }
 
     const handleReviewSubmit = async () => {
         // Tạo payload để gửi đến API
@@ -159,76 +153,21 @@ const ProductDetail = () => {
                 const user = JSON.parse(local);
                 setUser(user);
 
-                // await productApi.getProductById(id).then((item) => {
-                //     setProductDetail(item.data);
-                //     // setProductReview(item.reviews);
-                //     // setProductReviewCount(item.reviewStats);
-                //     // setAvgRating(item.avgRating);
-                //     // console.log(((reviewsCount[4] || 0) / reviews.length) * 100);
+                await sanPhamApi.getDetailSanPham(id).then((item) => {
+                    setProductDetail(item);
+                    // setProductReview(item.reviews);
+                    // setProductReviewCount(item.reviewStats);
+                    // setAvgRating(item.avgRating);
+                    // console.log(((reviewsCount[4] || 0) / reviews.length) * 100);
 
-                // });
+                });
 
-                // await productApi.getCommentAndRatingByProductId2(id).then((item) => {
-                //     const uniqueComments = {};
-                //     const uniqueRatings = {};
-                //     let totalRating = 0;
-                //     let ratingCounts = {
-                //         oneStar: 0,
-                //         twoStars: 0,
-                //         threeStars: 0,
-                //         fourStars: 0,
-                //         fiveStars: 0
-                //     };
-
-                //     // Lọc dữ liệu để chỉ lấy một bản ghi duy nhất cho mỗi comment có thông tin giống nhau
-                //     item.comments.forEach((record) => {
-                //         const { comment_id, comment, username } = record;
-                //         if (!uniqueComments[comment_id]) {
-                //             uniqueComments[comment_id] = { comment_id, comment, username };
-                //         }
-                //     });
-
-                //     // Lọc dữ liệu để chỉ lấy một bản ghi duy nhất cho mỗi rating có thông tin giống nhau
-                //     item.ratings.forEach((record) => {
-                //         const { rating_id, rating, username } = record;
-                //         if (!uniqueRatings[rating_id]) {
-                //             uniqueRatings[rating_id] = { rating_id, rating, username };
-                //             totalRating += rating;
-
-                //             // Increment the count for the respective rating
-                //             if (rating === 1) ratingCounts.oneStar++;
-                //             else if (rating === 2) ratingCounts.twoStars++;
-                //             else if (rating === 3) ratingCounts.threeStars++;
-                //             else if (rating === 4) ratingCounts.fourStars++;
-                //             else if (rating === 5) ratingCounts.fiveStars++;
-                //         }
-                //     });
-
-                //     // Chuyển đổi objects thành mảng các bản ghi duy nhất
-                //     const uniqueCommentRecords = Object.values(uniqueComments);
-                //     const uniqueRatingRecords = Object.values(uniqueRatings);
-
-                //     // Tính toán số sao trung bình
-                //     const avgRating = (uniqueRatingRecords.length > 0)
-                //         ? (totalRating / uniqueRatingRecords.length).toFixed(1)
-                //         : 0;
-
-                //     // Debugging outputs
-                //     console.log('Rating Counts:', ratingCounts);
-                //     console.log('Unique Comments:', uniqueCommentRecords);
-                //     console.log('Unique Ratings:', uniqueRatingRecords);
-                //     console.log('Average Rating:', avgRating);
-
-                //     // Set state with the processed data
-                //     setProductReview({ comments: uniqueCommentRecords, ratings: uniqueRatingRecords });
-                //     setProductReviewCount(ratingCounts);
-                //     setAvgRating(avgRating);
-                // });
+               
 
 
-                // await productApi.getAllProducts().then((item) => {
-                //     setRecommend(item.data);
-                // });
+                await sanPhamApi.getAll().then((item) => {
+                    setRecommend(item);
+                });
                 setLoading(false);
 
             } catch (error) {
@@ -276,8 +215,8 @@ const ProductDetail = () => {
                         </div>
                         <hr></hr>
                         <div className="price">
-                            <h1 className="product_name">{productDetail.name}</h1>
-                            <Rate disabled value={avgRating} className="rate" />
+                            <h1 className="product_name">{productDetail?.tensanpham}</h1>
+                            <Rate disabled value={5} className="rate" />
                         </div>
                         <Row gutter={12} style={{ marginTop: 20 }}>
                             <Col span={8}>
@@ -291,15 +230,14 @@ const ProductDetail = () => {
                                     </Carousel>
                                 ) : (
                                     <Card className="card_image" bordered={false}>
-                                        <img src={productDetail.image} />
+                                        <img src={productDetail?.hinhanh} />
                                         <div className="promotion"></div>
                                     </Card>
                                 )}
                             </Col>
                             <Col span={8}>
                                 <Card className="card_total" bordered={false}>
-                                    <div className="price_product">{productDetail?.promotion?.toLocaleString('vi', { style: 'currency', currency: 'VND' })}</div>
-                                    <div className="promotion_product">{productDetail?.price?.toLocaleString('vi', { style: 'currency', currency: 'VND' })}</div>
+                                    <div className="price_product">{productDetail?.giahientai?.toLocaleString('vi', { style: 'currency', currency: 'VND' })}</div>
                                     <div class="box-product-promotion">
                                         <div class="box-product-promotion-header">
                                             <p>Khuyến mãi</p>
@@ -312,16 +250,7 @@ const ProductDetail = () => {
                                         </div>
                                     </div>
 
-                                    <div className="color-product">
-                                        {productDetail?.color?.map((color) => (
-                                            <span
-                                                key={color}
-                                                style={{ backgroundColor: color }} // Sửa đổi ở đây
-                                                className={`dot ${selectedColor === color ? 'active' : ''}`}
-                                                onClick={() => handleClick(color)}
-                                            ></span>
-                                        ))}
-                                    </div>
+                                  
                                     <div className="box_cart_1">
                                         <Button type="primary" className="by" size={'large'} onClick={() => paymentCard(productDetail)}>
                                             Mua ngay
@@ -336,7 +265,6 @@ const ProductDetail = () => {
                                 <Card className="card_total" bordered={false}>
                                     <div className='card_number'>
                                         <div>
-                                            <div className='number_total'>{productDetail.categoryTotal}</div>
                                             <div className='title_total'>Chính sách mua hàng</div>
                                             <div class="policy_intuitive">
                                                 <div class="policy">
@@ -365,7 +293,7 @@ const ProductDetail = () => {
                                                             </p>
                                                         </li>
 
-                                                        <li><div class="iconl"><i class="icondetail-sachhd"></i></div><p>Bộ sản phẩm gồm: Dây nguồn, Sách hướng dẫn, Thùng máy, Sạc {productDetail.name} <a href="#" >Xem hình</a></p></li>
+                                                        <li><div class="iconl"><i class="icondetail-sachhd"></i></div><p>Bộ sản phẩm gồm: Dây nguồn, Sách hướng dẫn, Thùng máy, Sạc {productDetail?.tensanpham} <a href="#" >Xem hình</a></p></li>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -376,7 +304,7 @@ const ProductDetail = () => {
                             </Col>
                         </Row>
                         <div>
-                            <div className='box_detail_description' dangerouslySetInnerHTML={{ __html: productDetail.description }}></div>
+                            <div className='box_detail_description' dangerouslySetInnerHTML={{ __html: productDetail?.mota }}></div>
                         </div>
 
                         <Row gutter={12} style={{ marginTop: 20 }}>
@@ -384,8 +312,7 @@ const ProductDetail = () => {
                                 <Card className="card_total" bordered={false}>
                                     <div className='card_number'>
                                         <div>
-                                            <div className='number_total'>{productDetail.categoryTotal}</div>
-                                            <div className='title_total'>Đánh giá & nhận xét {productDetail.name}</div>
+                                            <div className='title_total'>Đánh giá & nhận xét {productDetail?.tensanpham}</div>
                                             <div class="review">
                                                 <div class="policy-review">
                                                     <div class="policy__list">
@@ -541,13 +468,13 @@ const ProductDetail = () => {
                                     xs={{ span: 24 }}
                                     className='col-product'
                                     onClick={() => handleReadMore(item.id)}
-                                    key={item.id}
+                                    key={item?.masp}
                                 >
                                     <div className="show-product">
-                                        {item.image ? (
+                                        {item?.hinhanh ? (
                                             <img
                                                 className='image-product'
-                                                src={item.image}
+                                                src={item?.hinhanh}
                                             />
                                         ) : (
                                             <img
@@ -560,17 +487,12 @@ const ProductDetail = () => {
                                                 className='title-product'
                                                 ellipsis={{ rows: 2 }}
                                             >
-                                                {item.name}
+                                                {item?.tensanpham}
                                             </Paragraph>
                                             <div className="price-amount">
                                                 <Paragraph className='price-product'>
-                                                    {numberWithCommas(item.promotion)} đ
+                                                    {numberWithCommas(item?.giahientai)} đ
                                                 </Paragraph>
-                                                {item.promotion !== 0 &&
-                                                    <Paragraph className='price-cross'>
-                                                        {numberWithCommas(item.price)} đ
-                                                    </Paragraph>
-                                                }
                                             </div>
                                         </div>
                                     </div>

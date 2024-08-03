@@ -1,5 +1,6 @@
 package com.example.spring_boot_api.controller;
 
+import com.example.spring_boot_api.entity.LoaiSanPham;
 import com.example.spring_boot_api.entity.SanPham;
 import com.example.spring_boot_api.service.SanPhamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,5 +55,12 @@ public class SanPhamController {
     @GetMapping("/search")
     public ResponseEntity<List<SanPham>> searchSanPhamByName(@RequestParam String name) {
         return ResponseEntity.ok(sanPhamService.searchByName(name));
+    }
+
+    @GetMapping("/loaisanpham/{maloaisp}")
+    public ResponseEntity<List<SanPham>> getSanPhamByLoaiSanPham(@PathVariable int maloaisp) {
+        LoaiSanPham loaiSanPham = new LoaiSanPham();
+        loaiSanPham.setMaloaisp(maloaisp);
+        return ResponseEntity.ok(sanPhamService.findByLoaiSanPham(loaiSanPham));
     }
 }
