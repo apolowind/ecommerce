@@ -3,201 +3,56 @@ import {
 } from "@ant-design/icons";
 import {
   Breadcrumb, Button, Card, Form,
-  Input, Modal, Radio, Select, Spin, Steps, Typography, notification
+  Input, Modal, Radio,
+  Spin, Steps
 } from "antd";
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
-import axiosClient from "../../../apis/axiosClient";
-import "./pay.css";
 import sanPhamApi from "../../../apis/sanPhamApi";
+import "./pay.css";
+import donHangApi from "../../../apis/donHangApi";
 
 const Pay = () => {
   const [productDetail, setProductDetail] = useState([]);
   const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [orderTotal, setOrderTotal] = useState([]);
-  const [visible, setVisible] = useState(false);
-  const [dataForm, setDataForm] = useState([]);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const paymentId = queryParams.get("paymentId");
-  const [lengthForm, setLengthForm] = useState();
   const [form] = Form.useForm();
-  const [template_feedback, setTemplateFeedback] = useState();
   let { id } = useParams();
   const history = useHistory();
   const [showModal, setShowModal] = useState(false);
 
-  const hideModal = () => {
-    setVisible(false);
-  };
 
   const accountCreate = async (values) => {
-    if (values.billing === "paypal") {
-      localStorage.setItem("description", values.description);
-      localStorage.setItem("address", values.address);
-      try {
-        const approvalUrl = await handlePayment(values);
-        console.log(approvalUrl);
-        if (approvalUrl) {
-          window.location.href = approvalUrl; // Chuyển hướng đến URL thanh toán PayPal
-        } else {
-          notification["error"]({
-            message: `Thông báo`,
-            description: "Thanh toán thất bại",
-          });
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        notification["error"]({
-          message: `Thông báo`,
-          description: "Thanh toán thất bại",
-        });
-      }
-    } else {
-      try {
-        const formatData = {
-          userId: userData.id,
-          address: values.address,
-          billing: values.billing,
-          description: values.description,
-          status: "pending",
-          products: productDetail,
-          orderTotal: orderTotal,
-        };
-
-        console.log(formatData);
-        await axiosClient.post("/order", formatData).then((response) => {
-          console.log(response);
-          if (response.error === "Insufficient quantity for one or more products.") {
-            return notification["error"]({
-              message: `Thông báo`,
-              description: "Sản phẩm đã hết hàng!",
-            });
-          }
-
-          if (response == undefined) {
-            notification["error"]({
-              message: `Thông báo`,
-              description: "Đặt hàng thất bại",
-            });
-          } else {
-            notification["success"]({
-              message: `Thông báo`,
-              description: "Đặt hàng thành công",
-            });
-            form.resetFields();
-            history.push("/final-pay");
-            localStorage.removeItem("cart");
-            localStorage.removeItem("cartLength");
-          }
-        });
-      } catch (error) {
-        throw error;
-      }
-      setTimeout(function () {
-        setLoading(false);
-      }, 1000);
-    }
-  };
-
-  const handlePayment = async (values) => {
     try {
-      const productPayment = {
-        price: "800",
-        description: values.bookingDetails,
-        return_url: "http://localhost:3500" + location.pathname,
-        cancel_url: "http://localhost:3500" + location.pathname,
+      const local = localStorage.getItem("user");
+      const user = JSON.parse(local);
+
+      const orderData = {
+        diachi: values.diachi,
+        khachhang: { makh: user.makh || 1 },
+        ngaydat: values.ngaydat,
+        ngaynhan: values.ngaynhan,
+        phivanchuyen: 30000,
+        sdtnn: values.sdtnn,
+        tenn: values.tenn,
+        trangthai: 'Pending'
       };
-      const response = await axiosClient.post("/payment/pay", productPayment);
-      if (response.approvalUrl) {
-        localStorage.setItem("session_paypal", response.accessToken);
-        return response.approvalUrl; // Trả về URL thanh toán
-      } else {
-        notification["error"]({
-          message: `Thông báo`,
-          description: "Thanh toán thất bại",
-        });
-        return null;
-      }
+
+      const response = await donHangApi.createDonHang(orderData);
+      console.log("Order created successfully: ", response);
+
+      form.resetFields();
+      history.push("/final-pay");
     } catch (error) {
-      throw error;
+      console.error("Failed to create order: ", error);
     }
   };
 
-  const handleModalConfirm = async () => {
-    try {
-      const queryParams = new URLSearchParams(window.location.search);
-      const paymentId = queryParams.get("paymentId");
-      // const token = queryParams.get('token');
-      const PayerID = queryParams.get("PayerID");
-      const token = localStorage.getItem("session_paypal");
-      const description = localStorage.getItem("description");
-      const address = localStorage.getItem("address");
-
-      // Gọi API executePayment để thực hiện thanh toán
-      const response = await axiosClient.get("/payment/executePayment", {
-        params: {
-          paymentId,
-          token,
-          PayerID,
-        },
-      });
-
-      console.log(response)
-
-      if (response) {
-        const local = localStorage.getItem("client");
-        const currentUser = JSON.parse(local);
-
-        const formatData = {
-          userId: currentUser.id,
-          address: address,
-          billing: "paypal",
-          description: description,
-          status: "pending",
-          products: productDetail,
-          orderTotal: orderTotal,
-        };
-
-        console.log(formatData);
-        await axiosClient.post("/order", formatData).then((response) => {
-          console.log(response);
-          if (response == undefined) {
-            notification["error"]({
-              message: `Thông báo`,
-              description: "Đặt hàng thất bại",
-            });
-          } else {
-            notification["success"]({
-              message: `Thông báo`,
-              description: "Đặt hàng thành công",
-            });
-            form.resetFields();
-            history.push("/final-pay");
-            localStorage.removeItem("cart");
-            localStorage.removeItem("cartLength");
-          }
-        });
-        notification["success"]({
-          message: `Thông báo`,
-          description: "Thanh toán thành công",
-        });
-
-        setShowModal(false);
-      } else {
-        notification["error"]({
-          message: `Thông báo`,
-          description: "Thanh toán thất bại",
-        });
-      }
-
-      setShowModal(false);
-    } catch (error) {
-      console.error("Error executing payment:", error);
-      // Xử lý lỗi
-    }
-  };
+ 
 
   const CancelPay = () => {
     form.resetFields();
@@ -236,21 +91,21 @@ const Pay = () => {
         const cart = JSON.parse(localStorage.getItem("cart")) || [];
         console.log(cart);
 
-        const transformedData = cart.map(
-          ({ _id: product, quantity, promotion, price, name }) => ({ product, quantity, promotion, price, name })
-        );
-        let totalPrice = 0;
+        // const transformedData = cart.map(
+        //   ({ _id: product, quantity, promotion, price, name }) => ({ product, quantity, promotion, price, name })
+        // );
+        // let totalPrice = 0;
 
-        for (let i = 0; i < transformedData.length; i++) {
-          let product = transformedData[i];
-          console.log(product);
-          let price = product.promotion * product.quantity;
-          totalPrice += price;
-        }
+        // for (let i = 0; i < transformedData.length; i++) {
+        //   let product = transformedData[i];
+        //   console.log(product);
+        //   let price = product.promotion * product.quantity;
+        //   totalPrice += price;
+        // }
 
-        setOrderTotal(totalPrice);
-        setProductDetail(transformedData);
-        console.log(transformedData);
+        // setOrderTotal(totalPrice);
+        // setProductDetail(transformedData);
+        // console.log(transformedData);
         setUserData(user);
         setLoading(false);
       } catch (error) {
@@ -311,6 +166,12 @@ const Pay = () => {
                     label="Tên người nhận"
                     hasFeedback
                     style={{ marginBottom: 10 }}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng nhập tên người nhận",
+                      },
+                    ]}
                   >
                     <Input placeholder="Tên người nhận" />
                   </Form.Item>
@@ -388,7 +249,6 @@ const Pay = () => {
                     <Radio.Group>
                       <Radio value={"cod"}>COD</Radio>
                       <Radio value={"stripe"}>STRIPE</Radio>
-                      {/* <Radio value={2}>B</Radio> */}
                     </Radio.Group>
                   </Form.Item>
 
@@ -422,13 +282,6 @@ const Pay = () => {
             </div>
           </div>
         </Card>
-        <Modal
-          visible={showModal}
-          onOk={handleModalConfirm}
-          onCancel={() => setShowModal(false)}
-        >
-          <p>Bạn có chắc chắn muốn xác nhận thanh toán?</p>
-        </Modal>
       </Spin>
     </div>
   );
