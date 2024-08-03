@@ -19,8 +19,6 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import FinalPay from "../pages/Purchase/FinalPay/finalPay";
 import Register from "../pages/Register/register";
 import ProductList from "../pages/Product/productList/productList";
-import News from "../pages/News/news";
-import NewsDetail from "../pages/NewsDetai/newsDetai";
 import ChangePassword from "../pages/ChangePassword/changePassword";
 
 
@@ -80,12 +78,6 @@ const RouterURL = withRouter(({ location }) => {
                     </Route>
                     <Route exact path="/contact">
                         <Contact />
-                    </Route>
-                    <Route exact path="/news">
-                        <News />
-                    </Route>
-                    <Route exact path="/news/:id">
-                        <NewsDetail />
                     </Route>
                     <Route exact path="/product-list/:id">
                         <ProductList />
@@ -154,12 +146,6 @@ const RouterURL = withRouter(({ location }) => {
                         <PrivateContainer />
                     </Route>
                     <Route exact path="/product-list/:id">
-                        <PublicContainer />
-                    </Route>
-                    <Route exact path="/news">
-                        <PublicContainer />
-                    </Route>
-                    <Route exact path="/news/:id">
                         <PublicContainer />
                     </Route>
                     <Route exact path="/change-password/:id">

@@ -3,8 +3,6 @@ import { OverPack } from 'rc-scroll-anim';
 import Texty from 'rc-texty';
 import TweenOne from 'rc-tween-one';
 import React, { useEffect, useRef, useState } from "react";
-import eventApi from "../../apis/eventApi";
-import productApi from "../../apis/productApi";
 import promotion1 from "../../assets/home/banner-1.png";
 import triangleTopRight from "../../assets/icon/Triangle-Top-Right.svg";
 import service10 from "../../assets/image/service/service10.png";
@@ -18,8 +16,8 @@ import { RightOutlined } from '@ant-design/icons';
 import { BackTop, Card, Carousel, Col, Row, Spin } from "antd";
 import Paragraph from "antd/lib/typography/Paragraph";
 import { useHistory } from 'react-router-dom';
-import categoryApi from "../../apis/categoryApi";
 import { numberWithCommas } from "../../utils/common";
+import LoaisanphamApi from '../../apis/loaisanphamApi';
 
 const DATE_TIME_FORMAT = "DD - MM - YYYY";
 const gridStyle = {
@@ -50,17 +48,6 @@ const Home = () => {
 
     const history = useHistory();
 
-    const handlePage = async (page, size) => {
-        try {
-            const response = await eventApi.getListEvents(page, 8);
-            setEventListHome(response.data)
-            setTotalEvent(response.total_count);
-            setCurrentPage(page);
-
-        } catch (error) {
-            console.log('Failed to fetch event list:' + error);
-        }
-    }
 
     const handleReadMore = (id) => {
         console.log(id);
@@ -78,40 +65,40 @@ const Home = () => {
 
     useEffect(() => {
         (async () => {
-            try {
-                const response = await productApi.getAllProducts({ page: 1, limit: 10 })
-                setProductList(response.data)
-                setTotalEvent(response);
-                setLoading(false);
-            } catch (error) {
-                console.log('Failed to fetch event list:' + error);
-            }
+            // try {
+            //     const response = await productApi.getAllProducts({ page: 1, limit: 10 })
+            //     setProductList(response.data)
+            //     setTotalEvent(response);
+            //     setLoading(false);
+            // } catch (error) {
+            //     console.log('Failed to fetch event list:' + error);
+            // }
 
+            // try {
+            //     const response = await productApi.getListEvents(1, 6)
+            //     setEventListHome(response.data)
+            //     setTotalEvent(response.total_count);
+            // } catch (error) {
+            //     console.log('Failed to fetch event list:' + error);
+            // }
             try {
-                const response = await productApi.getListEvents(1, 6)
-                setEventListHome(response.data)
-                setTotalEvent(response.total_count);
-            } catch (error) {
-                console.log('Failed to fetch event list:' + error);
-            }
-            try {
-                const response = await categoryApi.getListCategory({ limit: 10, page: 1 });
+                const response = await LoaisanphamApi.getAll();
                 console.log(response);
-                setCategories(response.categories);
+                setCategories(response);
             } catch (error) {
                 console.log(error);
             }
             try {
-                const data = { limit: 10, page: 1 };
-                const response = await productApi.getProductsByCategory("1");
-                console.log(response);
-                setProductsPhone(response.data);
-                const response2 = await productApi.getProductsByCategory("2");
-                console.log(response2);
-                setProductsPC(response2.data);
-                const response3 = await productApi.getProductsByCategory("3");
-                console.log(response3);
-                setProductsTablet(response3.data);
+                // const data = { limit: 10, page: 1 };
+                // const response = await productApi.getProductsByCategory("1");
+                // console.log(response);
+                // setProductsPhone(response.data);
+                // const response2 = await productApi.getProductsByCategory("2");
+                // console.log(response2);
+                // setProductsPC(response2.data);
+                // const response3 = await productApi.getProductsByCategory("3");
+                // console.log(response3);
+                // setProductsTablet(response3.data);
             } catch (error) {
                 console.log(error);
             }
@@ -148,7 +135,7 @@ const Home = () => {
                                 {categories.map((category) => (
                                     <li key={category.id} onClick={() => handleCategoryDetails(category.id)}>
                                         <div className="menu-category">
-                                            {category.name}
+                                            {category.tenloaisp}
                                             <RightOutlined />
                                         </div>
                                     </li>

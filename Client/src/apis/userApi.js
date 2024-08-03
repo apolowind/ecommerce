@@ -2,7 +2,7 @@ import axiosClient from "./axiosClient";
 
 const userApi = {
     async getAllPersonalInfo() {
-        const url = '/auth/getAll';
+        const url = '/tai-khoan/getAll';
         try {
             const response = await axiosClient.get(url);
             console.log(response.data);
@@ -12,25 +12,26 @@ const userApi = {
         }
     },
 
-    login(email, password) {
-        const url = '/auth/login';
+    login(tendangnhap, matkhau) {
+        const url = '/tai-khoan/login';
         return axiosClient
             .post(url, {
-                email,
-                password,
+                tendangnhap,
+                matkhau,
             })
             .then(response => {
                 console.log(response);
-                if (response.status) {
-                    localStorage.setItem("token", response.token);
-                    localStorage.setItem("client", JSON.stringify(response.user));
+                if (response) {
+                    localStorage.setItem("token", response.token || "token");
+                    localStorage.setItem("user", JSON.stringify(response));
                 }
                 return response;
             });
     },
 
     getProfile() {
-        const url = '/user/profile';
+        const user = JSON.parse(localStorage.getItem("user"));
+        const url = '/tai-khoan/profile/' + user?.tendangnhap;
         return axiosClient.get(url);
     },
 
@@ -45,8 +46,8 @@ const userApi = {
     },
 
     listUserByAdmin(data) {
-        const url = '/user/search';
-        return axiosClient.post(url, data);
+        const url = '/tai-khoan/all';
+        return axiosClient.get(url);
     },
 
     banAccount(data, id) {

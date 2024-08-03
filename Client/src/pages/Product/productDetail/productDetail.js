@@ -4,17 +4,9 @@ import Paragraph from "antd/lib/typography/Paragraph";
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import axiosClient from "../../../apis/axiosClient";
-import eventApi from "../../../apis/eventApi";
-import productApi from "../../../apis/productApi";
 import triangleTopRight from "../../../assets/icon/Triangle-Top-Right.svg";
 import { numberWithCommas } from "../../../utils/common";
 
-
-const { Meta } = Card;
-const { Option } = Select;
-
-const { Title } = Typography;
-const DATE_TIME_FORMAT = "DD/MM/YYYY HH:mm";
 const { TextArea } = Input;
 
 const ProductDetail = () => {
@@ -167,76 +159,76 @@ const ProductDetail = () => {
                 const user = JSON.parse(local);
                 setUser(user);
 
-                await productApi.getProductById(id).then((item) => {
-                    setProductDetail(item.data);
-                    // setProductReview(item.reviews);
-                    // setProductReviewCount(item.reviewStats);
-                    // setAvgRating(item.avgRating);
-                    // console.log(((reviewsCount[4] || 0) / reviews.length) * 100);
+                // await productApi.getProductById(id).then((item) => {
+                //     setProductDetail(item.data);
+                //     // setProductReview(item.reviews);
+                //     // setProductReviewCount(item.reviewStats);
+                //     // setAvgRating(item.avgRating);
+                //     // console.log(((reviewsCount[4] || 0) / reviews.length) * 100);
 
-                });
+                // });
 
-                await productApi.getCommentAndRatingByProductId2(id).then((item) => {
-                    const uniqueComments = {};
-                    const uniqueRatings = {};
-                    let totalRating = 0;
-                    let ratingCounts = {
-                        oneStar: 0,
-                        twoStars: 0,
-                        threeStars: 0,
-                        fourStars: 0,
-                        fiveStars: 0
-                    };
+                // await productApi.getCommentAndRatingByProductId2(id).then((item) => {
+                //     const uniqueComments = {};
+                //     const uniqueRatings = {};
+                //     let totalRating = 0;
+                //     let ratingCounts = {
+                //         oneStar: 0,
+                //         twoStars: 0,
+                //         threeStars: 0,
+                //         fourStars: 0,
+                //         fiveStars: 0
+                //     };
 
-                    // Lọc dữ liệu để chỉ lấy một bản ghi duy nhất cho mỗi comment có thông tin giống nhau
-                    item.comments.forEach((record) => {
-                        const { comment_id, comment, username } = record;
-                        if (!uniqueComments[comment_id]) {
-                            uniqueComments[comment_id] = { comment_id, comment, username };
-                        }
-                    });
+                //     // Lọc dữ liệu để chỉ lấy một bản ghi duy nhất cho mỗi comment có thông tin giống nhau
+                //     item.comments.forEach((record) => {
+                //         const { comment_id, comment, username } = record;
+                //         if (!uniqueComments[comment_id]) {
+                //             uniqueComments[comment_id] = { comment_id, comment, username };
+                //         }
+                //     });
 
-                    // Lọc dữ liệu để chỉ lấy một bản ghi duy nhất cho mỗi rating có thông tin giống nhau
-                    item.ratings.forEach((record) => {
-                        const { rating_id, rating, username } = record;
-                        if (!uniqueRatings[rating_id]) {
-                            uniqueRatings[rating_id] = { rating_id, rating, username };
-                            totalRating += rating;
+                //     // Lọc dữ liệu để chỉ lấy một bản ghi duy nhất cho mỗi rating có thông tin giống nhau
+                //     item.ratings.forEach((record) => {
+                //         const { rating_id, rating, username } = record;
+                //         if (!uniqueRatings[rating_id]) {
+                //             uniqueRatings[rating_id] = { rating_id, rating, username };
+                //             totalRating += rating;
 
-                            // Increment the count for the respective rating
-                            if (rating === 1) ratingCounts.oneStar++;
-                            else if (rating === 2) ratingCounts.twoStars++;
-                            else if (rating === 3) ratingCounts.threeStars++;
-                            else if (rating === 4) ratingCounts.fourStars++;
-                            else if (rating === 5) ratingCounts.fiveStars++;
-                        }
-                    });
+                //             // Increment the count for the respective rating
+                //             if (rating === 1) ratingCounts.oneStar++;
+                //             else if (rating === 2) ratingCounts.twoStars++;
+                //             else if (rating === 3) ratingCounts.threeStars++;
+                //             else if (rating === 4) ratingCounts.fourStars++;
+                //             else if (rating === 5) ratingCounts.fiveStars++;
+                //         }
+                //     });
 
-                    // Chuyển đổi objects thành mảng các bản ghi duy nhất
-                    const uniqueCommentRecords = Object.values(uniqueComments);
-                    const uniqueRatingRecords = Object.values(uniqueRatings);
+                //     // Chuyển đổi objects thành mảng các bản ghi duy nhất
+                //     const uniqueCommentRecords = Object.values(uniqueComments);
+                //     const uniqueRatingRecords = Object.values(uniqueRatings);
 
-                    // Tính toán số sao trung bình
-                    const avgRating = (uniqueRatingRecords.length > 0)
-                        ? (totalRating / uniqueRatingRecords.length).toFixed(1)
-                        : 0;
+                //     // Tính toán số sao trung bình
+                //     const avgRating = (uniqueRatingRecords.length > 0)
+                //         ? (totalRating / uniqueRatingRecords.length).toFixed(1)
+                //         : 0;
 
-                    // Debugging outputs
-                    console.log('Rating Counts:', ratingCounts);
-                    console.log('Unique Comments:', uniqueCommentRecords);
-                    console.log('Unique Ratings:', uniqueRatingRecords);
-                    console.log('Average Rating:', avgRating);
+                //     // Debugging outputs
+                //     console.log('Rating Counts:', ratingCounts);
+                //     console.log('Unique Comments:', uniqueCommentRecords);
+                //     console.log('Unique Ratings:', uniqueRatingRecords);
+                //     console.log('Average Rating:', avgRating);
 
-                    // Set state with the processed data
-                    setProductReview({ comments: uniqueCommentRecords, ratings: uniqueRatingRecords });
-                    setProductReviewCount(ratingCounts);
-                    setAvgRating(avgRating);
-                });
+                //     // Set state with the processed data
+                //     setProductReview({ comments: uniqueCommentRecords, ratings: uniqueRatingRecords });
+                //     setProductReviewCount(ratingCounts);
+                //     setAvgRating(avgRating);
+                // });
 
 
-                await productApi.getAllProducts().then((item) => {
-                    setRecommend(item.data);
-                });
+                // await productApi.getAllProducts().then((item) => {
+                //     setRecommend(item.data);
+                // });
                 setLoading(false);
 
             } catch (error) {

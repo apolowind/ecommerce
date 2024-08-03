@@ -54,11 +54,6 @@ function DropdownAvatar() {
           Quản lý đơn hàng
         </a>
       </Menu.Item>
-      <Menu.Item icon={<SettingOutlined />} >
-      <a target="_blank" rel="noopener noreferrer" onClick={() => handleRouter("/change-password/"+ userData.id)}>
-         Thay đổi mật khẩu
-        </a>
-      </Menu.Item>
       <Menu.Item key="3" icon={<LogoutOutlined />} onClick={Logout}  >
         <a target="_blank" rel="noopener noreferrer" >
           Thoát

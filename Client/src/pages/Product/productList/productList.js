@@ -7,11 +7,11 @@ import Paragraph from "antd/lib/typography/Paragraph";
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import axiosClient from "../../../apis/axiosClient";
-import productApi from "../../../apis/productApi";
 import triangleTopRight from "../../../assets/icon/Triangle-Top-Right.svg";
 import { numberWithCommas } from "../../../utils/common";
 import "./productList.css";
-import categoryApi from "../../../apis/categoryApi";
+import LoaisanphamApi from "../../../apis/loaisanphamApi";
+import sanPhamApi from "../../../apis/sanPhamApi";
 
 
 const ProductList = () => {
@@ -70,13 +70,13 @@ const ProductList = () => {
   useEffect(() => {
     (async () => {
       try {
-        await productApi.getProductsByCategory(id).then((response) => {
+        // await sanPhamApi.getDetailSanPham(id).then((response) => {
 
-          // Cập nhật state với danh sách sản phẩm chỉ có trạng thái 'Available'
-          setProductDetail(response.data);
-        });
-        const response = await categoryApi.getListCategory({ limit: 50, page: 1 });
-        setCategories(response.categories);
+        //   // Cập nhật state với danh sách sản phẩm chỉ có trạng thái 'Available'
+        //   setProductDetail(response.data);
+        // });
+        const response = await LoaisanphamApi.getAll();
+        setCategories(response);
 
         setLoading(false);
       } catch (error) {
@@ -106,10 +106,10 @@ const ProductList = () => {
               {categories.map((category) => (
                 <div
                   key={category.id}
-                  onClick={() => handleCategoryDetails(category.id)}
+                  onClick={() => handleCategoryDetails(category.maloaisp)}
                   className="menu-item-1"
                 >
-                  <div className="menu-category-1">{category.name}</div>
+                  <div className="menu-category-1">{category.tenloaisp}</div>
                 </div>
               ))}
             </div>

@@ -2,7 +2,6 @@ import { AuditOutlined, HomeOutlined } from '@ant-design/icons';
 import { Breadcrumb, Button, Card, Form, Result, Spin, Steps } from "antd";
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import productApi from "../../../apis/productApi";
 import userApi from "../../../apis/userApi";
 
 const FinalPay = () => {
@@ -23,9 +22,9 @@ const FinalPay = () => {
     useEffect(() => {
         (async () => {
             try {
-                await productApi.getDetailProduct(id).then((item) => {
-                    setProductDetail(item);
-                });
+                // await productApi.getDetailProduct(id).then((item) => {
+                //     setProductDetail(item);
+                // });
                 const response = await userApi.getProfile();
                 console.log(response);
                 form.setFieldsValue({

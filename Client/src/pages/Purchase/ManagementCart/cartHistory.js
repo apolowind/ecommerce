@@ -8,8 +8,6 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import axiosClient from "../../../apis/axiosClient";
-import eventApi from "../../../apis/eventApi";
-import productApi from "../../../apis/productApi";
 import "./cartHistory.css";
 
 const CartHistory = () => {
@@ -181,10 +179,10 @@ const CartHistory = () => {
             try {
                 const local = localStorage.getItem("client");
                 const user = JSON.parse(local);
-                await productApi.getOrderByUser(user.id).then((item) => {
-                    console.log(item.data);
-                    setOrderList(item.data);
-                });
+                // await productApi.getOrderByUser(user.id).then((item) => {
+                //     console.log(item.data);
+                //     setOrderList(item.data);
+                // });
                 setLoading(false);
             } catch (error) {
                 console.log("Failed to fetch event detail:" + error);

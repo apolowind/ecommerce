@@ -8,7 +8,6 @@ import {
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import axiosClient from "../../../apis/axiosClient";
-import productApi from "../../../apis/productApi";
 import "./pay.css";
 
 const Pay = () => {
@@ -211,9 +210,9 @@ const Pay = () => {
           setShowModal(true);
         }
 
-        await productApi.getProductById(id).then((item) => {
-          setProductDetail(item);
-        });
+        // await productApi.getProductById(id).then((item) => {
+        //   setProductDetail(item);
+        // });
         const local = localStorage.getItem("client");
         const user = JSON.parse(local);
         console.log(user);
