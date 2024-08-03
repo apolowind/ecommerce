@@ -234,15 +234,6 @@ const DonHangManagement = () => {
                             <Col span="18"></Col>
                             <Col span="6">
                                 <Row justify="end">
-                                    <Space>
-                                        <Button
-                                            key="1"
-                                            icon={<PlusOutlined />}
-                                            onClick={() => setOpenModalCreate(true)}
-                                        >
-                                            Tạo đơn hàng mới
-                                        </Button>
-                                    </Space>
                                 </Row>
                             </Col>
                         </Row>
