@@ -4,6 +4,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import sanPhamApi from '../../apis/sanPhamApi';
 import LoaisanphamApi from '../../apis/loaisanphamApi';
 import { useHistory } from 'react-router-dom';
+import uploadFileApi from '../../apis/uploadFileApi';
 
 const { PageHeader } = require('@ant-design/pro-layout');
 const { Option } = Select;
@@ -17,7 +18,7 @@ const SanPhamManagement = () => {
     const [form] = Form.useForm();
     const [form2] = Form.useForm();
     const [currentId, setCurrentId] = useState(null);
-    const [fileList, setFileList] = useState([]);
+    const [hinhanh, setHinhanh] = useState([]);
 
     useEffect(() => {
         fetchSanPhamList();
@@ -46,7 +47,7 @@ const SanPhamManagement = () => {
     const handleCreate = async (values) => {
         setLoading(true);
         try {
-            await sanPhamApi.createSanPham(values);
+            await sanPhamApi.createSanPham({ ...values, hinhanh: file, loaisanpham: { maloaisp: values.loaisanpham } });
             notification.success({ message: 'Tạo sản phẩm thành công' });
             setOpenModalCreate(false);
             fetchSanPhamList();
@@ -60,7 +61,7 @@ const SanPhamManagement = () => {
     const handleUpdate = async (values) => {
         setLoading(true);
         try {
-            await sanPhamApi.updateSanPham({ ...values, masp: currentId });
+            await sanPhamApi.updateSanPham({ ...values, hinhanh: file || hinhanh, loaisanpham: { maloaisp: values.loaisanpham }, masp: currentId });
             notification.success({ message: 'Chỉnh sửa sản phẩm thành công' });
             setOpenModalUpdate(false);
             fetchSanPhamList();
@@ -85,21 +86,35 @@ const SanPhamManagement = () => {
     };
 
     const handleEdit = async (id) => {
+        setLoading(true);
+
         setCurrentId(id);
         try {
             const response = await sanPhamApi.getDetailSanPham(id);
-            form2.setFieldsValue(response);
+            setHinhanh(response.hinhanh);
+            form2.setFieldsValue({...response, loaisanpham: response.loaisanpham.maloaisp});
             setOpenModalUpdate(true);
+            setLoading(false);
+
         } catch (error) {
             console.error('Failed to fetch san pham details:', error);
         }
     };
+
+
 
     const columns = [
         {
             title: 'Mã sản phẩm',
             dataIndex: 'masp',
             key: 'masp',
+        },
+        {
+            title: 'Ảnh',
+            dataIndex: 'hinhanh',
+            key: 'hinhanh',
+            render: (image) => <img src={image} style={{ height: 80 }} />,
+            width: '15%',
         },
         {
             title: 'Tên sản phẩm',
@@ -120,7 +135,7 @@ const SanPhamManagement = () => {
             title: 'Loại sản phẩm',
             dataIndex: 'loaisanpham',
             key: 'loaisanpham',
-            render: (text) => text ? text.maloaisp : '',
+            render: (text) => text ? text.tenloaisp : '',
         },
         {
             title: 'Action',
@@ -152,9 +167,17 @@ const SanPhamManagement = () => {
         },
     ];
 
-    const handleUploadChange = ({ fileList }) => setFileList(fileList);
+    const [file, setUploadFile] = useState();
 
-    const history = useHistory();
+
+    const handleChangeImage = async (e) => {
+        setLoading(true);
+        const response = await uploadFileApi.uploadFile(e);
+        if (response) {
+            setUploadFile(response);
+        }
+        setLoading(false);
+    }
 
     return (
         <div className="sanpham-management-container">
@@ -204,76 +227,83 @@ const SanPhamManagement = () => {
                     cancelText="Hủy"
                     width={800}
                 >
-                    <Form
-                        form={form}
-                        layout="vertical"
-                        name="createSanPham"
-                    >
-                        <Form.Item
-                            name="tensanpham"
-                            label="Tên sản phẩm"
-                            rules={[{ required: true, message: 'Vui lòng nhập tên sản phẩm!' }]}
-                            style={{ marginBottom: 10 }}
+                    <Spin spinning={loading}>
+
+                        <Form
+                            form={form}
+                            layout="vertical"
+                            name="createSanPham"
                         >
-                            <Input />
-                        </Form.Item>
-                        <Form.Item
-                            name="giahientai"
-                            label="Giá hiện tại"
-                            rules={[{ required: true, message: 'Vui lòng nhập giá!' }]}
-                            style={{ marginBottom: 10 }}
-                        >
-                            <Input type="number" />
-                        </Form.Item>
-                        <Form.Item
-                            name="soluongton"
-                            label="Số lượng tồn"
-                            rules={[{ required: true, message: 'Vui lòng nhập số lượng tồn!' }]}
-                            style={{ marginBottom: 10 }}
-                        >
-                            <Input type="number" />
-                        </Form.Item>
-                        <Form.Item
-                            name="mota"
-                            label="Mô tả"
-                            style={{ marginBottom: 10 }}
-                        >
-                            <Input.TextArea />
-                        </Form.Item>
-                        <Form.Item
-                            name="thongsokythuat"
-                            label="Thông số kỹ thuật"
-                            style={{ marginBottom: 10 }}
-                        >
-                            <Input.TextArea />
-                        </Form.Item>
-                        <Form.Item
-                            name="loaisanpham"
-                            label="Loại sản phẩm"
-                            rules={[{ required: true, message: 'Vui lòng chọn loại sản phẩm!' }]}
-                            style={{ marginBottom: 10 }}
-                        >
-                            <Select
-                                options={loaiSanPhamList.map(item => ({
-                                    label: item.tenloaisp,
-                                    value: item.maloaisp,
-                                }))}
-                            />
-                        </Form.Item>
-                        <Form.Item
-                            name="hinhanh"
-                            label="Hình ảnh"
-                            style={{ marginBottom: 10 }}
-                        >
-                            <Upload
-                                fileList={fileList}
-                                onChange={handleUploadChange}
-                                listType="picture"
+                            <Form.Item
+                                name="tensanpham"
+                                label="Tên sản phẩm"
+                                rules={[{ required: true, message: 'Vui lòng nhập tên sản phẩm!' }]}
+                                style={{ marginBottom: 10 }}
                             >
-                                <Button>Chọn hình ảnh</Button>
-                            </Upload>
-                        </Form.Item>
-                    </Form>
+                                <Input />
+                            </Form.Item>
+                            <Form.Item
+                                name="giahientai"
+                                label="Giá hiện tại"
+                                rules={[{ required: true, message: 'Vui lòng nhập giá!' }]}
+                                style={{ marginBottom: 10 }}
+                            >
+                                <Input type="number" />
+                            </Form.Item>
+                            <Form.Item
+                                name="soluongton"
+                                label="Số lượng tồn"
+                                rules={[{ required: true, message: 'Vui lòng nhập số lượng tồn!' }]}
+                                style={{ marginBottom: 10 }}
+                            >
+                                <Input type="number" />
+                            </Form.Item>
+                            <Form.Item
+                                name="mota"
+                                label="Mô tả"
+                                style={{ marginBottom: 10 }}
+                                rules={[{ required: true, message: 'Vui lòng nhập mô tả!' }]}
+
+                            >
+                                <Input.TextArea />
+                            </Form.Item>
+                            <Form.Item
+                                name="thongsokythuat"
+                                label="Thông số kỹ thuật"
+                                style={{ marginBottom: 10 }}
+                                rules={[{ required: true, message: 'Vui lòng nhập thông số kỹ thuật!' }]}
+                            >
+                                <Input.TextArea />
+                            </Form.Item>
+                            <Form.Item
+                                name="loaisanpham"
+                                label="Loại sản phẩm"
+                                rules={[{ required: true, message: 'Vui lòng chọn loại sản phẩm!' }]}
+                                style={{ marginBottom: 10 }}
+                            >
+                                <Select
+                                    options={loaiSanPhamList.map(item => ({
+                                        label: item.tenloaisp,
+                                        value: item.maloaisp,
+                                    }))}
+                                />
+                            </Form.Item>
+                            <Form.Item
+                                name="hinhanh"
+                                label="Hình ảnh"
+                                style={{ marginBottom: 10 }}
+                                rules={[{ required: true, message: 'Vui lòng chọn ảnh!' }]}
+                            >
+                                <input
+                                    type="file"
+                                    onChange={handleChangeImage}
+                                    id="avatar"
+                                    name="file"
+                                    accept="image/png, image/jpeg"
+                                />
+                            </Form.Item>
+                        </Form>
+                    </Spin>
                 </Modal>
 
                 <Modal
@@ -297,66 +327,63 @@ const SanPhamManagement = () => {
                         layout="vertical"
                         name="updateSanPham"
                     >
-                        <Form.Item
-                            name="tensanpham"
-                            label="Tên sản phẩm"
-                            style={{ marginBottom: 10 }}
-                        >
-                            <Input />
-                        </Form.Item>
-                        <Form.Item
-                            name="giahientai"
-                            label="Giá hiện tại"
-                            style={{ marginBottom: 10 }}
-                        >
-                            <Input type="number" />
-                        </Form.Item>
-                        <Form.Item
-                            name="soluongton"
-                            label="Số lượng tồn"
-                            style={{ marginBottom: 10 }}
-                        >
-                            <Input type="number" />
-                        </Form.Item>
-                        <Form.Item
-                            name="mota"
-                            label="Mô tả"
-                            style={{ marginBottom: 10 }}
-                        >
-                            <Input.TextArea />
-                        </Form.Item>
-                        <Form.Item
-                            name="thongsokythuat"
-                            label="Thông số kỹ thuật"
-                            style={{ marginBottom: 10 }}
-                        >
-                            <Input.TextArea />
-                        </Form.Item>
-                        <Form.Item
-                            name="loaisanpham"
-                            label="Loại sản phẩm"
-                            style={{ marginBottom: 10 }}
-                        >
-                            <Select
-                                options={loaiSanPhamList.map(item => ({
-                                    label: item.tenloaisp,
-                                    value: item.maloaisp,
-                                }))}
-                            />
-                        </Form.Item>
-                        <Form.Item
-                            name="hinhanh"
-                            label="Hình ảnh"
-                            style={{ marginBottom: 10 }}
-                        >
-                            <Upload
-                                fileList={fileList}
-                                onChange={handleUploadChange}
-                                listType="picture"
+                        <Spin spinning={loading}>
+                            <Form.Item
+                                name="tensanpham"
+                                label="Tên sản phẩm"
+                                style={{ marginBottom: 10 }}
                             >
-                                <Button>Chọn hình ảnh</Button>
-                            </Upload>
-                        </Form.Item>
+                                <Input />
+                            </Form.Item>
+                            <Form.Item
+                                name="giahientai"
+                                label="Giá hiện tại"
+                                style={{ marginBottom: 10 }}
+                            >
+                                <Input type="number" />
+                            </Form.Item>
+                            <Form.Item
+                                name="soluongton"
+                                label="Số lượng tồn"
+                                style={{ marginBottom: 10 }}
+                            >
+                                <Input type="number" />
+                            </Form.Item>
+                            <Form.Item
+                                name="mota"
+                                label="Mô tả"
+                                style={{ marginBottom: 10 }}
+                            >
+                                <Input.TextArea />
+                            </Form.Item>
+                            <Form.Item
+                                name="thongsokythuat"
+                                label="Thông số kỹ thuật"
+                                style={{ marginBottom: 10 }}
+                            >
+                                <Input.TextArea />
+                            </Form.Item>
+                            <Form.Item
+                                name="loaisanpham"
+                                label="Loại sản phẩm"
+                                style={{ marginBottom: 10 }}
+                            >
+                                <Select
+                                    options={loaiSanPhamList.map(item => ({
+                                        label: item.tenloaisp,
+                                        value: item.maloaisp,
+                                    }))}
+                                />
+                            </Form.Item>
+                            <Form.Item
+                                label="Hình ảnh"
+                                style={{ marginBottom: 10 }}
+                            >
+                                <input type="file" onChange={handleChangeImage}
+                                    id="avatar" name="file"
+                                    accept="image/png, image/jpeg" />
+                            </Form.Item>
+                        </Spin>
                     </Form>
                 </Modal>
             </Spin>

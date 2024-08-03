@@ -10,7 +10,7 @@ const sanPhamApi = {
         return axiosClient.post(url, data);
     },
     updateSanPham(data) {
-        const url = '/sanpham';
+        const url = '/sanpham/'+ data.masp;
         return axiosClient.put(url, data);
     },
     getByLoai(id) {

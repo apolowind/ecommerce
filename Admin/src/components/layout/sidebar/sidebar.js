@@ -1,4 +1,16 @@
-import { BarsOutlined, DashboardOutlined, FormOutlined, ShoppingCartOutlined, ShoppingOutlined, UserOutlined } from '@ant-design/icons';
+import { 
+  BarsOutlined, 
+  DashboardOutlined, 
+  FormOutlined, 
+  ShoppingCartOutlined, 
+  ShoppingOutlined, 
+  UserOutlined, 
+  TeamOutlined, 
+  AuditOutlined, 
+  AppstoreOutlined, 
+  PercentageOutlined, 
+  FileTextOutlined 
+} from '@ant-design/icons';
 import { Layout, Menu } from 'antd';
 import React, { useEffect } from 'react';
 import { useHistory, useLocation } from "react-router-dom";
@@ -29,52 +41,51 @@ function Sidebar() {
       key: "product-list",
       title: "Danh sách sản phẩm",
       link: "/product-list",
-      icon: <FormOutlined />
+      icon: <AppstoreOutlined />
     },
     {
       key: "quyen-management",
       title: "Quản lý phân quyền",
       link: "/quyen-management",
-      icon: <FormOutlined />
+      icon: <AuditOutlined />
     },
     {
       key: "nha-cung-cap-management",
       title: "Quản lý nhà cung cấp",
       link: "/nha-cung-cap-management",
-      icon: <FormOutlined />
+      icon: <TeamOutlined />
     },
     {
       key: "nhan-vien-management",
       title: "Quản lý nhân viên",
       link: "/nhan-vien-management",
-      icon: <ShoppingOutlined />
+      icon: <TeamOutlined />
     },
     {
       key: "loai-san-pham",
       title: "Loại sản phẩm",
       link: "/loai-san-pham",
-      icon: <BarsOutlined />
+      icon: <AppstoreOutlined />
     },
     {
       key: "hang",
       title: "Quản lý mặt hàng",
       link: "/hang",
-      icon: <ShoppingCartOutlined />
+      icon: <ShoppingOutlined />
     },
     {
       key: "dot-giam-gia",
       title: "Đợt giảm giá",
       link: "/dot-giam-gia",
-      icon: <BarsOutlined />
+      icon: <PercentageOutlined />
     },
     {
       key: "don-dat-hang",
       title: "Đơn đặt hàng",
       link: "/don-dat-hang",
-      icon: <BarsOutlined />
+      icon: <FileTextOutlined />
     },
   ];
-
   const navigate = (link, key) => {
     history.push(link);
   }
