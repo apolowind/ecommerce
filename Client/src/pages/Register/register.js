@@ -1,66 +1,56 @@
-import React, { useState, useEffect } from "react";
+import { LockOutlined, MailOutlined, PhoneOutlined, UserOutlined } from '@ant-design/icons';
+import { Button, Card, Divider, Form, Input, message, DatePicker } from 'antd';
+import React, { useState } from 'react';
+import { Link, useHistory } from "react-router-dom";
+import moment from 'moment';
 import "./register.css";
-import { DatePicker, Input } from 'antd';
-import { Card, Table, Space, Tag, PageHeader, Divider, Form, Button, notification } from 'antd';
-import { UserOutlined, LockOutlined, PhoneOutlined, MailOutlined, AimOutlined, MoneyCollectOutlined } from '@ant-design/icons';
-import { useHistory, Link } from "react-router-dom";
-import axiosClient from "../../apis/axiosClient";
+import userApi from '../../apis/userApi';
+import khachHangApi from '../../apis/khachHangApi';
 
 const { Search } = Input;
 
 const RegisterCustomer = () => {
-
-    const [delivery, setDelivery] = useState([]);
+    const [loading, setLoading] = useState(false);
     let history = useHistory();
 
     const onFinish = async (values) => {
-        var today = new Date();
-        var dd = String(today.getDate()).padStart(2, '0');
-        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-        var yyyy = today.getFullYear();
-        var date = yyyy + "-" + mm + "-" + dd;
-
+        setLoading(true);
         try {
-            const formatData = {
-                "email": values.email,
-                "username": values.username,
-                "password": values.password,
-                "phone": values.phoneNo,
-                "role": "isClient",
-                "status": "actived"
-            }
-            await axiosClient.post("http://localhost:3100/api/auth/register", formatData)
-                .then(response => {
-                    console.log(response);
-                    if (response === "Email is exist") {
-                        return notification["error"]({
-                            message: "Thông báo",
-                            description: "Email đã tồn tại",
+            // Đăng ký tài khoản
+            const response = await userApi.register({
+                maquyen: 4,
+                matkhau: values.matkhau,
+                tendangnhap: values.tendangnhap,
+                trangthai: true
+            });
 
-                        });
-                    }
-                    if (response === undefined) {
-                        notification["error"]({
-                            message: "Thông báo",
-                            description: "Đăng ký thất bại",
+            // Thêm thông tin khách hàng
+            const khachHangData = {
+                cmnd: values.cmnd,
+                diachi: values.diachi,
+                email: values.email,
+                ho: values.ho,
+                ngaysinh: values.ngaysinh.format('YYYY-MM-DD'),
+                sodienthoai: values.sodienthoai,
+                taikhoan: {
+                    tendangnhap: values.tendangnhap,
+                },
+                ten: values.ten
+            };
 
-                        });
-                    }
-                    else {
-                        notification["success"]({
-                            message: "Thông báo",
-                            description: "Đăng kí thành công",
-                        });
-                        setTimeout(function () {
-                            history.push("/login");
-                        }, 1000);
-                    }
-                }
-                );
+            await khachHangApi.createKhachHang(khachHangData);
+
+            message.success('Đăng ký thành công!');
+            console.log(response);
+            history.push("/login");
         } catch (error) {
-            throw error;
+            message.error('Đăng ký thất bại!');
+            console.error(error);
+        } finally {
+            setLoading(false);
         }
-    }
+    };
+
     return (
         <div>
             <div className="imageBackground">
@@ -76,7 +66,6 @@ const RegisterCustomer = () => {
                             onFinish={onFinish}
                         >
                             <Form.Item style={{ marginBottom: 3 }}>
-
                                 <Divider style={{ marginBottom: 5, fontSize: 19 }} orientation="center">Mobile Store</Divider>
                             </Form.Item>
                             <Form.Item style={{ marginBottom: 16 }}>
@@ -85,20 +74,20 @@ const RegisterCustomer = () => {
 
                             <Form.Item
                                 style={{ marginBottom: 20 }}
-                                name="username"
+                                name="tendangnhap"
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Vui lòng nhập tên hiển thị!',
+                                        message: 'Vui lòng nhập tên đăng nhập!',
                                     },
                                 ]}
                             >
-                                <Input prefix={<UserOutlined className="siteformitemicon" />} placeholder="Tên hiển thị" />
+                                <Input prefix={<UserOutlined className="siteformitemicon" />} placeholder="Tên đăng nhập" />
                             </Form.Item >
 
                             <Form.Item
                                 style={{ marginBottom: 20 }}
-                                name="password"
+                                name="matkhau"
                                 rules={[
                                     {
                                         required: true,
@@ -115,42 +104,105 @@ const RegisterCustomer = () => {
 
                             <Form.Item
                                 style={{ marginBottom: 20 }}
+                                name="ho"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Vui lòng nhập họ!',
+                                    },
+                                ]}
+                            >
+                                <Input prefix={<UserOutlined className="siteformitemicon" />} placeholder="Họ" />
+                            </Form.Item>
+
+                            <Form.Item
+                                style={{ marginBottom: 20 }}
+                                name="ten"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Vui lòng nhập tên!',
+                                    },
+                                ]}
+                            >
+                                <Input prefix={<UserOutlined className="siteformitemicon" />} placeholder="Tên" />
+                            </Form.Item>
+
+                            <Form.Item
+                                style={{ marginBottom: 20 }}
                                 name="email"
                                 rules={[
                                     {
                                         required: true,
-                                        whitespace: true,
                                         message: 'Vui lòng nhập email!',
                                     },
                                     {
                                         type: 'email',
                                         message: 'Email không hợp lệ!',
-                                    },
+                                    }
                                 ]}
                             >
-                                <Input prefix={<MailOutlined className="siteformitemicon" />} placeholder="e-mail!" />
-                            </Form.Item >
+                                <Input prefix={<MailOutlined className="siteformitemicon" />} placeholder="Email" />
+                            </Form.Item>
 
                             <Form.Item
                                 style={{ marginBottom: 20 }}
-                                name="phoneNo"
+                                name="sodienthoai"
                                 rules={[
                                     {
                                         required: true,
-                                        whitespace: true,
                                         message: 'Vui lòng nhập số điện thoại!',
-                                    },
-                                    {
-                                        pattern: new RegExp(/^[0-9]{10,15}$/g),
-                                        message: 'Số điện thoại không hợp lệ, vui lòng kiểm tra lại!',
                                     },
                                 ]}
                             >
                                 <Input prefix={<PhoneOutlined className="siteformitemicon" />} placeholder="Số điện thoại" />
-                            </Form.Item >
+                            </Form.Item>
+
+                            <Form.Item
+                                style={{ marginBottom: 20 }}
+                                name="cmnd"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Vui lòng nhập CMND!',
+                                    },
+                                ]}
+                            >
+                                <Input prefix={<UserOutlined className="siteformitemicon" />} placeholder="CMND" />
+                            </Form.Item>
+
+                            <Form.Item
+                                style={{ marginBottom: 20 }}
+                                name="diachi"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Vui lòng nhập địa chỉ!',
+                                    },
+                                ]}
+                            >
+                                <Input prefix={<UserOutlined className="siteformitemicon" />} placeholder="Địa chỉ" />
+                            </Form.Item>
+
+                            <Form.Item
+                                style={{ marginBottom: 20 }}
+                                name="ngaysinh"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Vui lòng chọn ngày sinh!',
+                                    },
+                                ]}
+                            >
+                                <DatePicker
+                                    style={{ width: '100%' }}
+                                    format="YYYY-MM-DD"
+                                    placeholder="Ngày sinh"
+                                />
+                            </Form.Item>
 
                             <Form.Item style={{ marginBottom: 18 }}>
-                                <Button className="loginformbutton" type="primary" htmlType="submit"  >
+                                <Button className="loginformbutton" type="primary" htmlType="submit" loading={loading}>
                                     Đăng Kí
                                 </Button>
                             </Form.Item>

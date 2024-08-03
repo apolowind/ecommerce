@@ -29,6 +29,14 @@ const userApi = {
             });
     },
 
+    register(data) {
+        const url = '/tai-khoan/register';
+        return axiosClient.post(url, data).then(response => {
+            console.log(response);
+            return response;
+        });
+    },
+
     getProfile() {
         const user = JSON.parse(localStorage.getItem("user"));
         const url = '/tai-khoan/profile/' + user?.tendangnhap;
