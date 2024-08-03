@@ -9,6 +9,7 @@ import React, { useEffect, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import axiosClient from "../../../apis/axiosClient";
 import "./pay.css";
+import sanPhamApi from "../../../apis/sanPhamApi";
 
 const Pay = () => {
   const [productDetail, setProductDetail] = useState([]);
@@ -210,37 +211,37 @@ const Pay = () => {
           setShowModal(true);
         }
 
-        // await productApi.getProductById(id).then((item) => {
-        //   setProductDetail(item);
-        // });
-        // const local = localStorage.getItem("user");
-        // const user = JSON.parse(local);
-        // console.log(user);
-        // form.setFieldsValue({
-        //   name: user.username,
-        //   email: user.email,
-        //   phone: user.phone,
-        // });
-        // const cart = JSON.parse(localStorage.getItem("cart")) || [];
-        // console.log(cart);
+        await sanPhamApi.getDetailSanPham(id).then((item) => {
+          setProductDetail(item);
+        });
+        const local = localStorage.getItem("user");
+        const user = JSON.parse(local);
+        console.log(user);
+        form.setFieldsValue({
+          name: user.tendangnhap,
+          email: user.email,
+          phone: user.phone,
+        });
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        console.log(cart);
 
-        // const transformedData = cart.map(
-        //   ({ _id: product, quantity, promotion, price, name }) => ({ product, quantity, promotion,price, name })
-        // );
-        // let totalPrice = 0;
+        const transformedData = cart.map(
+          ({ _id: product, quantity, promotion, price, name }) => ({ product, quantity, promotion,price, name })
+        );
+        let totalPrice = 0;
 
-        // for (let i = 0; i < transformedData.length; i++) {
-        //   let product = transformedData[i];
-        //   console.log(product);
-        //   let price = product.promotion * product.quantity;
-        //   totalPrice += price;
-        // }
+        for (let i = 0; i < transformedData.length; i++) {
+          let product = transformedData[i];
+          console.log(product);
+          let price = product.promotion * product.quantity;
+          totalPrice += price;
+        }
 
-        // setOrderTotal(totalPrice);
-        // setProductDetail(transformedData);
-        // console.log(transformedData);
-        // setUserData(user);
-        // setLoading(false);
+        setOrderTotal(totalPrice);
+        setProductDetail(transformedData);
+        console.log(transformedData);
+        setUserData(user);
+        setLoading(false);
       } catch (error) {
         console.log("Failed to fetch event detail:" + error);
       }
@@ -361,7 +362,7 @@ const Pay = () => {
                   >
                     <Radio.Group>
                       <Radio value={"cod"}>COD</Radio>
-                      <Radio value={"paypal"}>PAYPAL</Radio>
+                      <Radio value={"stripe"}>STRIPE</Radio>
                       {/* <Radio value={2}>B</Radio> */}
                     </Radio.Group>
                   </Form.Item>
