@@ -40,15 +40,15 @@ import {
         return handleDelete(productId);
       }
       const updatedCart = productDetail.map((item) => {
-        if (item._id === productId) {
+        if (item.masp === productId) {
           // Cập nhật số lượng và tính toán tổng tiền
           item.quantity = newQuantity;
-          item.total = item.promotion * newQuantity;
+          item.total = item.giahientai * newQuantity;
         }
         return item;
       });
       const total = updatedCart.reduce(
-        (acc, item) => acc + item.quantity * item.promotion,
+        (acc, item) => acc + item.quantity * item.giahientai,
         0
       );
       setCartTotal(total);
@@ -59,7 +59,7 @@ import {
     const handleDelete = (productId) => {
       const updatedCart = JSON.parse(localStorage.getItem("cart")) || [];
       const filteredCart = updatedCart.filter(
-        (product) => product._id !== productId
+        (product) => product.masp !== productId
       );
       localStorage.setItem("cart", JSON.stringify(filteredCart));
       localStorage.setItem("cartLength", filteredCart.length); 
@@ -76,23 +76,23 @@ import {
       },
       {
         title: "Ảnh",
-        dataIndex: "image",
-        key: "image",
-        render: (image) => <img src={image} style={{ height: 80 }} />,
+        dataIndex: "hinhanh",
+        key: "hinhanh",
+        render: (hinhanh) => <img src={hinhanh} style={{ height: 80 }} />,
         width: "10%",
       },
       {
         title: "Tên",
-        dataIndex: "name",
-        key: "name",
+        dataIndex: "tensanpham",
+        key: "tensanpham",
         render: (text, record) => (
           <a onClick={() => handleRowClick(record)}>{text}</a>
         ),
       },
       {
         title: "Giá",
-        dataIndex: "promotion",
-        key: "promotion",
+        dataIndex: "giahientai",
+        key: "giahientai",
         render: (text) => (
           <a>
             {text?.toLocaleString("vi", { style: "currency", currency: "VND" })}
@@ -108,7 +108,7 @@ import {
             min={0}
             defaultValue={text}
             onChange={(value) => {
-              updateQuantity(record._id, value);
+              updateQuantity(record.masp, value);
             }}
           />
         ),
@@ -120,7 +120,7 @@ import {
         render: (text, record) => (
           <div>
             <div className="groupButton">
-              {(record?.promotion * record?.quantity).toLocaleString("vi", {
+              {(record?.giahientai * record?.quantity).toLocaleString("vi", {
                 style: "currency",
                 currency: "VND",
               })}
@@ -132,7 +132,7 @@ import {
         title: "Hành động",
         key: "action",
         render: (text, record) => (
-          <Button type="danger" onClick={() => handleDelete(record._id)}>
+          <Button type="danger" onClick={() => handleDelete(record.masp)}>
             Xóa
           </Button>
         ),
@@ -145,7 +145,7 @@ import {
       const cartLength = localStorage.getItem("cartLength") || 0;
       setCartLength(parseInt(cartLength));
       const total = cart.reduce(
-        (acc, item) => acc + item.quantity * item.promotion,
+        (acc, item) => acc + item.quantity * item.giahientai,
         0
       );
       setCartTotal(total);
