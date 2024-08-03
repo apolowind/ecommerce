@@ -1,9 +1,9 @@
 import {
-    LeftSquareOutlined
+  LeftSquareOutlined
 } from "@ant-design/icons";
 import {
-    Breadcrumb, Button, Card, Form,
-    Input, Modal, Radio, Select, Spin, Steps, Typography, notification
+  Breadcrumb, Button, Card, Form,
+  Input, Modal, Radio, Select, Spin, Steps, Typography, notification
 } from "antd";
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
@@ -217,16 +217,27 @@ const Pay = () => {
         const local = localStorage.getItem("user");
         const user = JSON.parse(local);
         console.log(user);
+
+        const currentDate = new Date();
+        const currentDateString = currentDate.toISOString().substring(0, 10);
+        const deliveryDate = new Date();
+        deliveryDate.setDate(currentDate.getDate() + 3);
+        const deliveryDateString = deliveryDate.toISOString().substring(0, 10);
+
         form.setFieldsValue({
-          name: user.tendangnhap,
-          email: user.email,
-          phone: user.phone,
+          tenn: user.tendangnhap,
+          ngaydat: currentDateString,
+          ngaynhan: deliveryDateString,
+          phivanchuyen: Number(30000).toLocaleString("vi", {
+            style: "currency",
+            currency: "VND",
+          })
         });
         const cart = JSON.parse(localStorage.getItem("cart")) || [];
         console.log(cart);
 
         const transformedData = cart.map(
-          ({ _id: product, quantity, promotion, price, name }) => ({ product, quantity, promotion,price, name })
+          ({ _id: product, quantity, promotion, price, name }) => ({ product, quantity, promotion, price, name })
         );
         let totalPrice = 0;
 
@@ -296,34 +307,31 @@ const Pay = () => {
                   scrollToFirstError
                 >
                   <Form.Item
-                    name="name"
-                    label="Tên"
+                    name="tenn"
+                    label="Tên người nhận"
                     hasFeedback
                     style={{ marginBottom: 10 }}
                   >
-                    <Input  placeholder="Tên" />
+                    <Input placeholder="Tên người nhận" />
                   </Form.Item>
 
                   <Form.Item
-                    name="email"
-                    label="Email"
+                    name="sdtnn"
+                    label="Số điện thoại người nhận"
                     hasFeedback
                     style={{ marginBottom: 10 }}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng nhập số điện thoại",
+                      },
+                    ]}
                   >
-                    <Input disabled placeholder="Email" />
+                    <Input placeholder="Số điện thoại người nhận" />
                   </Form.Item>
 
                   <Form.Item
-                    name="phone"
-                    label="Số điện thoại"
-                    hasFeedback
-                    style={{ marginBottom: 10 }}
-                  >
-                    <Input  placeholder="Số điện thoại" />
-                  </Form.Item>
-
-                  <Form.Item
-                    name="address"
+                    name="diachi"
                     label="Địa chỉ"
                     hasFeedback
                     rules={[
@@ -331,8 +339,6 @@ const Pay = () => {
                         required: true,
                         message: "Vui lòng nhập địa chỉ",
                       },
-                      // { max: 20, message: 'Password maximum 20 characters.' },
-                      // { min: 6, message: 'Password at least 6 characters.' },
                     ]}
                     style={{ marginBottom: 15 }}
                   >
@@ -340,12 +346,31 @@ const Pay = () => {
                   </Form.Item>
 
                   <Form.Item
-                    name="description"
-                    label="Lưu ý cho đơn hàng"
+                    name="ngaydat"
+                    label="Ngày đặt"
                     hasFeedback
-                    style={{ marginBottom: 15 }}
+                    style={{ marginBottom: 10 }}
+                    
                   >
-                    <Input.TextArea rows={4} placeholder="Lưu ý" />
+                    <Input placeholder="Ngày đặt" disabled/>
+                  </Form.Item>
+
+                  <Form.Item
+                    name="ngaynhan"
+                    label="Ngày nhận"
+                    hasFeedback
+                    style={{ marginBottom: 10 }}
+                  >
+                    <Input placeholder="Ngày nhận" disabled/>
+                  </Form.Item>
+
+                  <Form.Item
+                    name="phivanchuyen"
+                    label="Phí vận chuyển"
+                    hasFeedback
+                    style={{ marginBottom: 10 }}
+                  >
+                    <Input placeholder="Phí vận chuyển" disabled />
                   </Form.Item>
 
                   <Form.Item
