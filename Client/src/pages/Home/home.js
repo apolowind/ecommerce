@@ -1,30 +1,25 @@
-import React, { useState, useEffect, useRef } from "react";
-import "../Home/home.css";
+import QueueAnim from 'rc-queue-anim';
+import { OverPack } from 'rc-scroll-anim';
 import Texty from 'rc-texty';
 import TweenOne from 'rc-tween-one';
-import QueueAnim from 'rc-queue-anim';
+import React, { useEffect, useRef, useState } from "react";
 import eventApi from "../../apis/eventApi";
 import productApi from "../../apis/productApi";
-import { OverPack } from 'rc-scroll-anim';
-import { DateTime } from "../../utils/dateTime";
-import handshake from "../../assets/icon/handshake.svg";
 import promotion1 from "../../assets/home/banner-1.png";
-import banner from "../../assets/image/banner/banner.png";
-import banner2 from "../../assets/image/banner/banner2.png";
+import triangleTopRight from "../../assets/icon/Triangle-Top-Right.svg";
+import service10 from "../../assets/image/service/service10.png";
 import service6 from "../../assets/image/service/service6.png";
 import service7 from "../../assets/image/service/service7.png";
 import service8 from "../../assets/image/service/service8.png";
 import service9 from "../../assets/image/service/service9.png";
-import service10 from "../../assets/image/service/service10.png";
-import TawkMessengerReact from '@tawk.to/tawk-messenger-react';
-import triangleTopRight from "../../assets/icon/Triangle-Top-Right.svg"
+import "../Home/home.css";
 
-import { useHistory } from 'react-router-dom';
-import { RightOutlined, QrcodeOutlined } from '@ant-design/icons';
-import { Col, Row, Button, Pagination, Spin, Carousel, Card, List, BackTop, Affix, Avatar, Badge, Rate } from "antd";
+import { RightOutlined } from '@ant-design/icons';
+import { BackTop, Card, Carousel, Col, Row, Spin } from "antd";
 import Paragraph from "antd/lib/typography/Paragraph";
-import { numberWithCommas } from "../../utils/common";
+import { useHistory } from 'react-router-dom';
 import categoryApi from "../../apis/categoryApi";
+import { numberWithCommas } from "../../utils/common";
 
 const DATE_TIME_FORMAT = "DD - MM - YYYY";
 const gridStyle = {

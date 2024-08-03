@@ -50,30 +50,7 @@ const AccountManagement = lazy(() => {
         .then(([moduleExports]) => moduleExports);
 });
 
-const Notification = lazy(() => {
-    return Promise.all([
-        import('../pages/Notifications/notification'),
-        new Promise(resolve => setTimeout(resolve, 0))
-    ])
-        .then(([moduleExports]) => moduleExports);
-});
 
-
-const ProductList = lazy(() => {
-    return Promise.all([
-        import('../pages/ProductList/productList'),
-        new Promise(resolve => setTimeout(resolve, 0))
-    ])
-        .then(([moduleExports]) => moduleExports);
-});
-
-const CategoryList = lazy(() => {
-    return Promise.all([
-        import('../pages/CategoryList/categoryList'),
-        new Promise(resolve => setTimeout(resolve, 0))
-    ])
-        .then(([moduleExports]) => moduleExports);
-});
 
 const DashBoard = lazy(() => {
     return Promise.all([
@@ -83,13 +60,7 @@ const DashBoard = lazy(() => {
         .then(([moduleExports]) => moduleExports);
 });
 
-const NewsList = lazy(() => {
-    return Promise.all([
-        import('../pages/News/news'),
-        new Promise(resolve => setTimeout(resolve, 0))
-    ])
-        .then(([moduleExports]) => moduleExports);
-});
+
 
 const Profile = lazy(() => {
     return Promise.all([
@@ -123,14 +94,6 @@ const OrderDetail = lazy(() => {
         .then(([moduleExports]) => moduleExports);
 });
 
-const Suppliers = lazy(() => {
-    return Promise.all([
-        import('../pages/Suppliers/suppliers'),
-        new Promise(resolve => setTimeout(resolve, 0))
-    ])
-        .then(([moduleExports]) => moduleExports);
-})
-
 const Hang = lazy(() => {
     return Promise.all([
         import('../pages/Admin/HangManagement.js'),
@@ -138,14 +101,6 @@ const Hang = lazy(() => {
     ])
         .then(([moduleExports]) => moduleExports);
 })
-
-const ResetPassword = lazy(() => {
-    return Promise.all([
-        import('../pages/ResetPassword/resetPassword'),
-        new Promise(resolve => setTimeout(resolve, 0))
-    ])
-        .then(([moduleExports]) => moduleExports);
-});
 
 const LoaiSanPham = lazy(() => {
     return Promise.all([
@@ -200,14 +155,8 @@ const RouterURL = withRouter(({ location }) => {
                     <Login />
                 </Suspense>
             </PublicRoute>
-            <PublicRoute exact path="/news-list">
-                <NewsList />
-            </PublicRoute>
             <PublicRoute exact path="/login">
                 <Login />
-            </PublicRoute>
-            <PublicRoute exact path="/reset-password/:id">
-                <ResetPassword />
             </PublicRoute>
         </div>
     )

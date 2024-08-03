@@ -1,21 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import "./orderDetail.css";
 import {
-    Col, Row, Typography, Spin, Button, Card, Badge, Empty, Input, Space,
-    Form, Pagination, Modal, Popconfirm, notification, BackTop, Tag, Breadcrumb, Select, Table
-} from 'antd';
-import {
-    AppstoreAddOutlined, QrcodeOutlined, DeleteOutlined, PlusOutlined, EyeOutlined, ExclamationCircleOutlined, SearchOutlined,
-    CalendarOutlined, UserOutlined, TeamOutlined, HomeOutlined, HistoryOutlined, ShoppingCartOutlined, FormOutlined, TagOutlined, EditOutlined
+    HomeOutlined,
+    ShoppingCartOutlined
 } from '@ant-design/icons';
-import eventApi from "../../apis/eventApi";
-import orderApi from "../../apis/orderApi";
-import { useHistory, useParams } from 'react-router-dom';
-import { DateTime } from "../../utils/dateTime";
-import ProductList from '../ProductList/productList';
-import axiosClient from '../../apis/axiosClient';
-import { PageHeader } from '@ant-design/pro-layout';
+import {
+    BackTop,
+    Breadcrumb,
+    Form,
+    Modal,
+    Select,
+    Spin,
+    Typography,
+    notification
+} from 'antd';
 import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
+import axiosClient from '../../apis/axiosClient';
+import orderApi from "../../apis/orderApi";
+import "./orderDetail.css";
 const { Option } = Select;
 const { confirm } = Modal;
 const DATE_TIME_FORMAT = "DD/MM/YYYY HH:mm";

@@ -17,9 +17,7 @@ import {
     Spin
 } from 'antd';
 import React, { useEffect, useState } from 'react';
-import newsApi from '../../apis/newsApi';
 import userApi from '../../apis/userApi';
-import productApi from '../../apis/productsApi';
 import supplierApi from '../../apis/supplierApi';
 import orderApi from '../../apis/orderApi'; // Import orderApi
 import "./dashBoard.css";
@@ -37,15 +35,6 @@ const DashBoard = () => {
     useEffect(() => {
         (async () => {
             try {
-                await newsApi.getListNews().then((res) => {
-                    console.log(res);
-                    setTotalList(res);
-                });
-
-                await productApi.getAllProducts().then((res) => {
-                    console.log(res);
-                    setProduct(res);
-                });
 
                 await supplierApi.getListSuppliers().then((res) => {
                     console.log(res);
