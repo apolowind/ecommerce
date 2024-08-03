@@ -4,7 +4,7 @@ import { Route, Redirect } from 'react-router-dom';
 const PrivateRoute = ({ children, ...rest }) => {
 
     const checkAuth = () => {
-        if (localStorage.getItem('client') !== null){
+        if (localStorage.getItem('user') !== null){
             return true;
         }else{
             return false;

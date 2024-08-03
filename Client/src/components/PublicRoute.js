@@ -4,8 +4,8 @@ import { Route, Redirect } from 'react-router-dom';
 const PublicRoute = ({ children, ...rest }) => {
 
     const checkAuth = () => {
-        console.log(localStorage.getItem('client'));
-        if (localStorage.getItem('client') !== null) return false;
+        console.log(localStorage.getItem('user'));
+        if (localStorage.getItem('user') !== null) return false;
         return true;
     }
 
