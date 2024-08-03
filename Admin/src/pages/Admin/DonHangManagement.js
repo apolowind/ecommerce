@@ -183,13 +183,13 @@ const DonHangManagement = () => {
             title: 'Nhân viên duyệt',
             dataIndex: 'nhanvienDuyet',
             key: 'nhanvienDuyet',
-            render: (text) => (text.ten),
+            render: (text) => (text?.ten),
         },
         {
             title: 'Nhân viên giao',
             dataIndex: 'nhanvienGiao',
             key: 'nhanvienGiao',
-            render: (text) => (text.ten),
+            render: (text) => (text?.ten),
         },
         {
             title: 'Action',
