@@ -28,8 +28,10 @@ const Pay = () => {
 
   const accountCreate = async (values) => {
     try {
-      const local = localStorage.getItem("user");
+      const local = localStorage.getItem("customer");
       const user = JSON.parse(local);
+
+
 
       const orderData = {
         diachi: values.diachi,

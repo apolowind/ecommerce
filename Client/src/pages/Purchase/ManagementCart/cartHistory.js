@@ -9,6 +9,8 @@ import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import axiosClient from "../../../apis/axiosClient";
 import "./cartHistory.css";
+import khachHangApi from "../../../apis/khachHangApi";
+import donHangApi from "../../../apis/donHangApi";
 
 const CartHistory = () => {
     const [orderList, setOrderList] = useState([]);
@@ -65,80 +67,43 @@ const CartHistory = () => {
 
     const columns = [
         {
-            title: "Thông tin sản phẩm",
-            dataIndex: "products",
-            key: "productInfo",
-            render: (products) => (
-                <div>
-                    {products.map((item, index) => (
-                        <div key={index} className="product-info">
-                            
-                            <h3 className="product-name-1">{item.product?.name}</h3>
-                            <div className="product-price">
-                                Giá gốc: {item?.price?.toLocaleString("vi", {
-                                    style: "currency",
-                                    currency: "VND",
-                                })}
-                            </div>
-                            <div className="product-quantity">
-                                Số lượng: {item?.quantity}
-                            </div>
-                            <div className="product-total">
-                                Tổng tiền: {(item?.price * item.quantity).toLocaleString("vi", {
-                                    style: "currency",
-                                    currency: "VND",
-                                })}
-                            </div>
-                            {index !== products.length - 1 && <Divider />}
-                        </div>
-                    ))}
-                </div>
-            ),
+            title: "Mã đơn hàng",
+            dataIndex: "madh",
+            key: "madh",
         },
-
-
         {
-            title: "Tổng đơn hàng",
-            dataIndex: "order_total",
-            key: "order_total",
-            render: (products) => (
-                <div>
-                    {products?.toLocaleString("vi", {
-                        style: "currency",
-                        currency: "VND",
-                    })}
-                </div>
-            ),
+            title: "Tên người nhận",
+            dataIndex: "tenn",
+            key: "tenn",
+        },
+        {
+            title: "Số điện thoại",
+            dataIndex: "sdtnn",
+            key: "sdtnn",
         },
         {
             title: "Địa chỉ",
-            dataIndex: "address",
-            key: "address",
-        },
-        {
-            title: "Hình thức thanh toán",
-            dataIndex: "billing",
-            key: "billing",
+            dataIndex: "diachi",
+            key: "diachi",
         },
         {
             title: "Trạng thái",
-            dataIndex: "status",
-            key: "status",
-            render: (slugs) => (
+            dataIndex: "trangthai",
+            key: "trangthai",
+            render: (trangthai) => (
                 <span>
-                    {slugs === "rejected" ? (
+                    {trangthai === "Rejected" ? (
                         <Tag style={{ width: 150, textAlign: "center" }} color="red">
                             Đã hủy
                         </Tag>
-                    ) : slugs === "approved" ? (
+                    ) : trangthai === "Approved" ? (
                         <Tag
                             style={{ width: 150, textAlign: "center" }}
                             color="geekblue"
-                            key={slugs}
                         >
                             Vận chuyển
                         </Tag>
-                    ) : slugs === "final" ? (
+                    ) : trangthai === "Final" ? (
                         <Tag color="green" style={{ width: 150, textAlign: "center" }}>
                             Đã giao - Đã thanh toán
                         </Tag>
@@ -152,40 +117,51 @@ const CartHistory = () => {
         },
         {
             title: "Ngày đặt",
-            dataIndex: "createdAt",
-            key: "createdAt",
-            render: (createdAt) => (
-                <span>{moment(createdAt).format("DD/MM/YYYY HH:mm")}</span>
+            dataIndex: "ngaydat",
+            key: "ngaydat",
+            render: (ngaydat) => (
+                <span>{moment(ngaydat).format("DD/MM/YYYY")}</span>
             ),
         },
-        // {
-        //     title: 'Hủy đơn hàng',
-        //     dataIndex: 'order',
-        //     key: 'order',
-        //     render: (text, record) => (
-        //         <Button
-        //             type="danger"
-        //             onClick={() => handleCancelOrder(record)}
-        //             disabled={record.status !== 'pending'}
-        //         >
-        //             Hủy đơn hàng
-        //         </Button>
-        //     ),
-        // },
+        {
+            title: "Ngày nhận",
+            dataIndex: "ngaynhan",
+            key: "ngaynhan",
+            render: (ngaynhan) => (
+                <span>{moment(ngaynhan).format("DD/MM/YYYY")}</span>
+            ),
+        },
+        {
+            title: "Phí vận chuyển",
+            dataIndex: "phivanchuyen",
+            key: "phivanchuyen",
+            render: (phivanchuyen) => (
+                <span>{phivanchuyen.toLocaleString("vi", { style: "currency", currency: "VND" })}</span>
+            ),
+        },
     ];
+    
 
     const handleList = () => {
         (async () => {
             try {
-                const local = localStorage.getItem("client");
+                const local = localStorage.getItem("customer");
                 const user = JSON.parse(local);
-                // await productApi.getOrderByUser(user.id).then((item) => {
-                //     console.log(item.data);
-                //     setOrderList(item.data);
-                // });
+    
+                if (user && user.makh) {
+                    await donHangApi.getAll().then((item) => {
+                        // Lọc danh sách đơn hàng dựa trên makh
+                        const filteredOrders = item.filter(order => order.khachhang.makh === user.makh);
+                        console.log(filteredOrders);
+                        setOrderList(filteredOrders);
+                    });
+                } else {
+                    console.error("Customer information not found in localStorage");
+                }
+                
                 setLoading(false);
             } catch (error) {
-                console.log("Failed to fetch event detail:" + error);
+                console.log("Failed to fetch order list:" + error);
             }
         })();
     }
