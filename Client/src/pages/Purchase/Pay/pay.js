@@ -1,16 +1,10 @@
-import {
-  LeftSquareOutlined
-} from "@ant-design/icons";
-import {
-  Breadcrumb, Button, Card, Form,
-  Input, Modal, Radio,
-  Spin, Steps
-} from "antd";
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
+import { Breadcrumb, Button, Card, Form, Input, Radio, Spin, Steps } from "antd";
+import { LeftSquareOutlined } from "@ant-design/icons";
 import sanPhamApi from "../../../apis/sanPhamApi";
-import "./pay.css";
 import donHangApi from "../../../apis/donHangApi";
+import "./pay.css";
 
 const Pay = () => {
   const [productDetail, setProductDetail] = useState([]);
@@ -25,13 +19,10 @@ const Pay = () => {
   const history = useHistory();
   const [showModal, setShowModal] = useState(false);
 
-
-  const accountCreate = async (values) => {
+  const createOrder = async (values) => {
     try {
       const local = localStorage.getItem("customer");
       const user = JSON.parse(local);
-
-
 
       const orderData = {
         diachi: values.diachi,
@@ -41,7 +32,8 @@ const Pay = () => {
         phivanchuyen: 30000,
         sdtnn: values.sdtnn,
         tenn: values.tenn,
-        trangthai: 'Pending'
+        trangthai: 'Pending',
+        giahientai: orderTotal
       };
 
       const response = await donHangApi.createDonHang(orderData);
@@ -50,7 +42,6 @@ const Pay = () => {
       localStorage.removeItem("cart");
       localStorage.removeItem("cartLength");
 
-
       form.resetFields();
       history.push("/final-pay");
     } catch (error) {
@@ -58,7 +49,43 @@ const Pay = () => {
     }
   };
 
- 
+  const handleStripePayment = async (values) => {
+    try {
+      const local = localStorage.getItem("customer");
+      const user = JSON.parse(local);
+      
+      const orderData = {
+        diachi: values.diachi,
+        khachhang: { makh: user.makh || 1 },
+        ngaydat: values.ngaydat,
+        ngaynhan: values.ngaynhan,
+        phivanchuyen: 30000,
+        sdtnn: values.sdtnn,
+        tenn: values.tenn,
+        trangthai: 'Pending',
+        giahientai: values.giahientai,
+        tongdonhang: orderTotal
+      };
+
+      const response = await donHangApi.createDonHang(orderData);
+
+      localStorage.removeItem("cart");
+      localStorage.removeItem("cartLength");
+
+      const session = await donHangApi.createStripeSession(orderData);
+      window.location.href = session.url;
+    } catch (error) {
+      console.error("Failed to create Stripe session: ", error);
+    }
+  };
+
+  const onFinish = (values) => {
+    if (values.billing === "cod") {
+      createOrder(values);
+    } else if (values.billing === "stripe") {
+      handleStripePayment(values);
+    }
+  };
 
   const CancelPay = () => {
     form.resetFields();
@@ -97,21 +124,21 @@ const Pay = () => {
         const cart = JSON.parse(localStorage.getItem("cart")) || [];
         console.log(cart);
 
-        // const transformedData = cart.map(
-        //   ({ _id: product, quantity, promotion, price, name }) => ({ product, quantity, promotion, price, name })
-        // );
-        // let totalPrice = 0;
+        const transformedData = cart.map(
+          ({ masp: product, quantity, giahientai, tensanpham }) => ({ product, quantity, giahientai, tensanpham })
+        );
+        let totalPrice = 0;
 
-        // for (let i = 0; i < transformedData.length; i++) {
-        //   let product = transformedData[i];
-        //   console.log(product);
-        //   let price = product.promotion * product.quantity;
-        //   totalPrice += price;
-        // }
+        for (let i = 0; i < transformedData.length; i++) {
+          let product = transformedData[i];
+          console.log(product);
+          let price = product.giahientai * product.quantity;
+          totalPrice += price;
+        }
 
-        // setOrderTotal(totalPrice);
-        // setProductDetail(transformedData);
-        // console.log(transformedData);
+        setOrderTotal(totalPrice);
+        setProductDetail(transformedData);
+        console.log(totalPrice);
         setUserData(user);
         setLoading(false);
       } catch (error) {
@@ -122,7 +149,7 @@ const Pay = () => {
   }, []);
 
   return (
-    <div class="py-5">
+    <div className="py-5">
       <Spin spinning={false}>
         <Card className="container">
           <div className="product_detail">
@@ -158,7 +185,7 @@ const Pay = () => {
               <div className="information_pay">
                 <Form
                   form={form}
-                  onFinish={accountCreate}
+                  onFinish={onFinish}
                   name="eventCreate"
                   layout="vertical"
                   initialValues={{
@@ -217,9 +244,8 @@ const Pay = () => {
                     label="Ngày đặt"
                     hasFeedback
                     style={{ marginBottom: 10 }}
-                    
                   >
-                    <Input placeholder="Ngày đặt" disabled/>
+                    <Input placeholder="Ngày đặt" disabled />
                   </Form.Item>
 
                   <Form.Item
@@ -228,7 +254,7 @@ const Pay = () => {
                     hasFeedback
                     style={{ marginBottom: 10 }}
                   >
-                    <Input placeholder="Ngày nhận" disabled/>
+                    <Input placeholder="Ngày nhận" disabled />
                   </Form.Item>
 
                   <Form.Item

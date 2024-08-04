@@ -25,6 +25,10 @@ const donHangApi = {
         const url = `/donhang/${id}`;
         return axiosClient.delete(url);
     },
+    createStripeSession(data) {
+        const url = '/checkout/create-checkout-session';
+        return axiosClient.post(url, data);
+    },
 }
 
 export default donHangApi;

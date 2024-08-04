@@ -20,6 +20,8 @@ import FinalPay from "../pages/Purchase/FinalPay/finalPay";
 import Register from "../pages/Register/register";
 import ProductList from "../pages/Product/productList/productList";
 import ChangePassword from "../pages/ChangePassword/changePassword";
+import Success from "../pages/Success";
+import Cancel from "../pages/Cancel";
 
 
 const RouterURL = withRouter(({ location }) => {
@@ -49,6 +51,12 @@ const RouterURL = withRouter(({ location }) => {
                     </PrivateRoute>
                     <PrivateRoute exact path="/product-list/:id">
                         <ProductList />
+                    </PrivateRoute>
+                    <PrivateRoute exact path="/success">
+                        <Success />
+                    </PrivateRoute>
+                    <PrivateRoute exact path="/cancel">
+                        <Cancel />
                     </PrivateRoute>
 
                     <PrivateRoute exact path="/change-password/:id">
@@ -143,6 +151,12 @@ const RouterURL = withRouter(({ location }) => {
                         <PrivateContainer />
                     </Route>
                     <Route exact path="/cart-history">
+                        <PrivateContainer />
+                    </Route>
+                    <Route exact path="/success">
+                        <PrivateContainer />
+                    </Route>
+                    <Route exact path="/cancel">
                         <PrivateContainer />
                     </Route>
                     <Route exact path="/product-list/:id">
